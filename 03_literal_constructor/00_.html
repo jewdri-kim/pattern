@@ -1,0 +1,630 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name ="format-detection" content ="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>03_리터럴과 생성자</title>
+<style type="text/css">
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,textarea,button {margin:0;padding:0}
+a {color:#1b52b1;text-decoration:underline}
+a:active, a:hover {text-decoration:underline}
+li ul{padding-left:10px;}
+h1 {font-size:25px;padding-top:10px;}
+h2 {color:#000b72;font-size:22px;padding-bottom:10px;padding-top:10px;border-bottom:1px solid #d0d0d0;}
+h3 {font-size:14px;padding:10px 20px;background:#d0d0d0;}
+header h2 {margin-top:20px;font-size:14px;padding:10px 20px;background:#d0d0d0;color:#333;}
+h4 {color:#000;padding:10px 20px;border:1px solid #d0d0d0;}
+
+section {padding:10px;}
+article {padding:20px;}
+xmp {margin:2%;background:#f1f1f1;white-space:pre-line;padding:0 2% 1% 2%;}
+pre{margin-bottom:20px;background:#000;white-space:pre-line;padding:1% 2% 1% 2%;color:#ff0;font-size:16px;font-family:tahoma;}
+pre span{color:#fff;font-size:14px;}
+header > div, section > div {margin-bottom:20px;border:1px solid #d0d0d0;padding:5px 30px;}
+.colorscripter-code{border:0;padding:0;}
+.colorscripter-code table{width:100%;}
+.data_box table td{text-align:center;}
+ul {padding:10px 0;}
+ol {padding-left:20px;}
+p {padding-top:10px;}
+.btn_top{display:inline-block;position:fixed;bottom:10px;right:10px;width:50px;height:50px;line-height:50px;background:#d0d0d0;color:#000;text-align:center;}
+footer{text-align:right;}
+section em{display:block;color:#595;}
+</style>
+</head>
+<body>
+<div class="wrap guide_wrap">
+	<header>
+		<h1>03_리터럴과 생성자</h1>
+
+		<h2>목차</h2>
+		<div>
+			<ol>
+				<li><a href="#con1">3.1 객체 리터럴</a></li>
+				<li><a href="#con2">3.2 사용자 정의 생성자 함수</a></li>
+				<li><a href="#con3">3.3 new를 강제하는 패턴</a></li>
+				<li><a href="#con4">3.4 배열 리터럴</a></li>
+				<li><a href="#con5">3.5 JSON</a></li>
+				<li><a href="#con6">3.6 정규 표현식 리터럴</a></li>
+				<li><a href="#con7">3.7 원시 데이터 타입 래퍼</a></li>
+				<li><a href="#con8">3.8 에러 객체</a></li>
+				<li><a href="#con9">3.9 요약</a></li>
+			</ol>
+		</div>
+	</header>
+	<section>
+		<div>
+			생성자 사용을 자제하고 대신 리터럴 표기법을 사용하자<br>
+			객체, 배열, 정규식 등의 리터럴을 다루며, 이에 대응하는 Object()나 Array()등의 내장 생성자 함수에 비해 리터럴 표기법을 쓰는 게 더 좋은 이유를 살펴본다. <br>
+			사용자 정의 생성자에 대해서도 알아보고, 생성자가 의도대로 작동할 수 있도록 보장하는 방법을 살펴본다.
+		</div>
+		<h2 id="con1">3.1 객체 리터럴</h2>
+		<div>
+			<ul>
+				<li>자바스크립트에서 '객체'란 이름-값 쌍의 해시 테이블을 생각하면 된다.</li>
+				<li>원시 데이터 타입, 객체, 함수 모두 값이 될 수 있고 값이 되는 함수를 메서드라고 한다.</li>
+			</ul>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;빈&nbsp;객체에서&nbsp;시작</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;dog&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;프로퍼티&nbsp;하나를&nbsp;추가</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">dog.<span style="color:#4be6fa">name</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"Benji"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;메서드&nbsp;추가</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">dog.getName&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;dog.<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			위 예제는 빈 객체에서 시작했고 프로퍼티와 메서드를 추가 프로그램 생명주기 중 어느 때라도 다음과 같은 일을 할 수 있다.
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#0086b3"></span><span style="color:#ff3399">/</span>&nbsp;프로퍼티와&nbsp;메서드&nbsp;값을&nbsp;변경</div><div style="padding:0 6px; white-space:pre; line-height:130%">dog.getName&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;메서드가&nbsp;하드코딩("Fido")된&nbsp;값을&nbsp;반환하도록&nbsp;재정의</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"Fido"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;프로퍼티나&nbsp;메서드&nbsp;삭제</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">delete</span>&nbsp;dog.<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;다른&nbsp;프로퍼티나&nbsp;메서드를&nbsp;추가한다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">dog.say&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"Woof!"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">dog.fleas&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">true</span>;</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<strong>반드시 빈 객체에서 시작해야 하는 것이 아니다.</strong> 객체 리터럴 표기법을 쓰면 다음 예제처럼 생성 시점에 객채에 기능을 추가 할 수 있다.
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;dog&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">name</span>:&nbsp;<span style="color:#ffd500">"Benji"</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;getName:&nbsp;<span style="color:#ff3399">function</span>&nbsp;()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;this.<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			책에서 빈 객체표현은 간결성을 위한 것이며 자바스크립트에서는 빈 객체가 없다. {} 객체조차도 이미 Object.prototype에서 상속받은 프로퍼티와 메서드를 가진다. 비어있다는 말은 어떤 객체가 상속받은 것 외에는 자기 자신의 프로퍼티를 갖고 있지 않다는 뜻
+		</div>
+		<h3>객체 리터럴 문법</h3>
+		<div>
+			<ul>
+				<li>객체를 중괄호({와})로 감싼다.</li>
+				<li>객체 내의 프로퍼티와 메서드를 쉼표(,)로 분리한다. 마지막 이름-값 쌍 뒤에 쉼표가 들어가면 ***IE7이하***에서는 에러가 발생하므로, 마지막에는 사용하지 말아야 한다.</li>
+				<li>프로퍼티명과 프로퍼티 값을 콜론(:)으로 분리</li>
+				<li>객체를 변수에 할당할 때는 닫는 중괄호 뒤에 세미콜론(;)을 빼먹지 말자.</li>
+			</ul>
+		</div>
+		<h3>생성자 함수로 객체 생성하기</h3>
+		<div>
+			<p>객체를 생성할 때는 직접 만든 생성자 함수를 사용할 수도 있고, Object(), Date(), String()등 내장 생성자를 사용할 수도 있다. 다음 예제는 동일한 객체를 생성하는 두 가지 방법</p>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;첫번째&nbsp;방법&nbsp;:&nbsp;리터럴&nbsp;사용</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;car&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{goes:&nbsp;<span style="color:#ffd500">"far"</span>};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;다른&nbsp;방법&nbsp;-&nbsp;내장&nbsp;생성자&nbsp;사용&nbsp;(&nbsp;안티&nbsp;패턴&nbsp;)</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;car&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Object</span>();</div><div style="padding:0 6px; white-space:pre; line-height:130%">car.goes&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"far"</span>;</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<ul>
+				<li>객체 리터럴 표기법이 더 짧다.</li>
+				<li>객체란 변경가능한 해시에 불과하며 특별한 것이 아니다.</li>
+				<li>리터럴 표기법을 사용하면 유효범위 판별 작업도 발생하지 않는다.(위 예제에서 스코프내 Object()가 중복되는지 확인 한다는건가요?)</li>
+			</ul>
+		</div>
+
+		<h3>객체 생성자의 함정</h3>
+		<div>
+			문제의 기능은 Object() 생성자가 인자를 받을 수 있다는 점이다. 인자로 전달되는 값에 따라 생성자 함수가 다른 내장 생성자에 객체 생성을 위임할 수 있고, 따라서 기대한 것돠는 다른 생성자로 생성된 객체가 반환된다.
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;모두&nbsp;안티&nbsp;패턴</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;빈&nbsp;객체</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;o&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Object</span>();</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(o.constructor&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">Object</span>);&nbsp;<span style="color:#999999">//&nbsp;true</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;숫자&nbsp;객체</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;o&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Object</span>(<span style="color:#c10aff">1</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(o.constructor&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">Number</span>);&nbsp;<span style="color:#999999">//&nbsp;true</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(o.toFixed(<span style="color:#c10aff">2</span>));&nbsp;<span style="color:#999999">//&nbsp;"1.00"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;문자열&nbsp;객체</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;o&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Object</span>(<span style="color:#ffd500">"I&nbsp;am&nbsp;a&nbsp;string"</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(o.constructor&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">String</span>);&nbsp;<span style="color:#999999">//&nbsp;true</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(&nbsp;<span style="color:#ff3399">typeof</span>&nbsp;o.<span style="color:#4be6fa">substring</span>);&nbsp;<span style="color:#999999">//&nbsp;"function"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;불린&nbsp;객체</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;o&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Object</span>(<span style="color:#c10aff">true</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(o.constructor&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">Boolean</span>);&nbsp;<span style="color:#999999">//&nbsp;true</span></div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			o.constructor의 값이 다 다르다. <strong>new Object()를 사용하지 마라.</strong>
+		</div>
+
+		<h2 id="con2">3.2 사용자 정의 생성자 함수</h2>
+		<div>
+			직접 생성자 함수를 만들어 객체 생성하기
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;adam&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">new</span>&nbsp;Person(<span style="color:#ffd500">"Adam"</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">adam.say();&nbsp;<span style="color:#999999">//&nbsp;"I&nbsp;am&nbsp;Adam"</span></div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<p>생성자 함수 정의</p>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;Person&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(<span style="color:#4be6fa">name</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;this.<span style="color:#4be6fa">name</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;this.say&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"I&nbsp;am&nbsp;"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;this.<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;};</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<p>
+				new와 함께 생성자 함수를 호출하면 함수안에서 다음과 같은 일이 일어난다.
+			</p>
+			<ul>
+				<li>빈 객체 생성. 이 객체는 this라는 변수로 참조할 수 있고, 해당 함수의 프로토타입을 상속받는다.</li>
+				<li>this로 참조되는 객체에 프로퍼티와 메서드가 추가된다.</li>
+				<li>마지막에 다른 객체가 명시적으로 반환되지 않을 경우, this로 참조된 이 객체가 반환된다.</li>
+			</ul>
+		</div>
+		<h4>연쇄할당문에서의 변수</h4>
+		<div>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><pre style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;foo(){</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;a&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;b&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></pre></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<p>a는 지역변수가 되지만 b눈 전역 변수가 된다.</p>
+
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><pre style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;foo(){</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;a,&nbsp;b;</div><div style="padding:0 6px; white-space:pre; line-height:130%">a&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;b&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></pre></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+
+			<p>변수를 미리 선언해두면 의도치 않은 전역 변수가 생성되는 일이 업서서, 연쇄 할당문을 사용해도 문제가 되지 않는다.</p>
+		</div>
+
+		<h3>var 선언을 빼먹었을때의 부작용</h3>
+		<div>
+			<ul>
+				<li>명시적으로 선언된 변수 : var 를 사용하여 명시적으로 선언된 전역변수는 삭제할 수 없다.</li>
+				<li>암묵적 전역 변수 : var를 사용하지 않고 생성한 변수(함수안이든 아니든)는 삭제할 수 없다.</li>
+			</ul>
+		</div>
+		<p>
+			ES5 스트릭트 모드에서는 선언되지 않은 변수에 값을 할당하면 에러가 발생한다.
+		</p>
+
+
+		<h3>전역 객체에 대한 접근</h3>
+
+		<div>
+			브라우저에서는 코드 어느곳에서든 window속성을 통해 전역객체에 접근가능하다. <br>
+			함수를 new와 생성자를 사용해 호출하지 않고 그냥 함수로 호출한 경우, 함수 안에서 this는 항상 전역객체를 가리키기 때문. (ES5 스트릭트 모드에서는 이 방법 불가능 - 이모드에서 실행될때에는 다른 패턴 사용)<br>
+			예를 들어 라이브러리를 개발하고 있다면, 라이브러리 코드를 즉시 실행함수로 감싼 후, 즉시 실행함수의 인자로 전역 유효범위를 가리키는 this를 전달하는 방법이 있다.
+		</div>
+		<script>
+			console.log('일반');
+			var global = (function(){ return this}); console.log(global());
+		</script>
+		<script>
+		console.log('strict');
+		(function(obj){
+		 	"use strict";
+		    console.log(obj);
+
+		}(this));
+		</script>
+
+		<h3>단일 var 패턴</h3>
+		<div>
+			변수를 선언할 때 초기값을 주어 초기화하는 것 역시 좋은습관이다.<br>
+			코드의 가독성도 향상되고, 나중에 코드를 볼 때 변수의 초기값에 근거해 변수의 용도가 무엇인지 짐작할 수 있다.
+		</div>
+
+		<h3>호이스팅(hoisting) : 분산된 var 선언의 문제점</h3>
+		<div>
+				hoisting이란 ? 함수 내 여리저기서 여러개의 var선언을 사용했지만 실제로는 모든 함수 상단에서 변수가 선언된 것과 동일하게 동작.
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><pre style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;안티패턴</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">myname&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'global'</span>;&nbsp;<span style="color:#999999">//전역&nbsp;변수</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;func(){</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">alert</span>(myname);	<span style="color:#999999">//undefined</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;myname&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"local"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">alert</span>(myname);	<span style="color:#999999">//local</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></pre></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+		</div>
+		<div>
+			첫번째 alert 에서 undefined 이 나오는 이유 : myname 이 이 함수의 지역변수로 선언되었다고 간주하기 때문.
+			모든 변수 선언문은 상단으로 끌어올려진다. <strong>이러한 혼란을 피하기 위해서는 변수를 모두 맨 첫 줄에서 선언하는 것이 좋다. </strong><br>
+			위에코드를 아래와 같이 동일하게 동작
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><pre style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;안티패턴</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">myname&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'global'</span>;&nbsp;<span style="color:#999999">//전역&nbsp;변수</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;func(){</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;myname;&nbsp;<span style="color:#999999">//&nbsp;var&nbsp;myname&nbsp;=&nbsp;undefinde와&nbsp;동일</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">alert</span>(myname);	<span style="color:#999999">//undefined</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">myname&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"local"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">alert</span>(myname);	<span style="color:#999999">//local</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></pre><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+		</div>
+
+
+		<h2 id="con3">2.3 for 루프</h2>
+		<div>
+			<strong>for(var i=0; i &lt;myarray.length; i++){...}<br></strong>
+			의 경우 루프 순회시마다 배열의 length에 접근한다.myarray가 배열이 아니라 HTMLCollection이라면 코드가 느려진다.<br>
+			for 루프를 최적화 하기 위해서는 아래와 같이 배열의 length를 캐시해야한다.<br>
+			<strong>for(var i=0, max = myarray.length; i &lt;max; i++){...}<br></strong><br>
+			이렇게 하면 length값을 한번만 구하고, 루프를 도는 동안 이값을 사용하게 된다.<br>
+			HTMLCollection를 순회할 때 length를 캐쉬하면, 사파리에서 3에서 2배, IE7에서 190배에 이르기까지 모든 브라우저에서 속도가 향상된다.
+		</div>
+		<div>
+			단일 var 패턴을 따라, var문을 루프외부로 빼내어도 만들 수 있다.<br><br>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><pre style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;looper(){</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">0</span>,&nbsp;max,&nbsp;myarray&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;[];</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>(i<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">0</span>,&nbsp;max<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>myarray.<span style="color:#4be6fa">length</span>;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">&lt;</span>max;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>){...}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></pre><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div><br>
+			장점 : 단일 var패턴을 고수하여 일관성을 지킨다<br>
+			단점 : 코드를 리팩터링할 때 전체루프를 복사하여 붙여넣기 힘들어짐. 다른 함수로 옮겨가려면 새함수에 i와 max를 반드시 함께 옮겨가야만 한다.(그리고 원본 함수에서 이 변수를 더이상 쓰지않는다면 거기서는 삭제해야한다.)
+		</div>
+		<div>
+			마지막으로 루프에 조정을 가한다면, i++명령문을 다음중 하나로 대체할 수 있다.
+			<ul>
+				<li>i = i+1</li>
+				<li>i += i+1</li>
+			</ul>
+			JSLint는 이 방법을 권장.<br>
+			(JSLint 는 JavaScript 소스 코드 가 코딩 규칙을 준수하는지 확인하기 위해 소프트웨어 개발 에 사용되는 정적 코드 분석 도구)<br>- JSLint의 plusplus 옵션을 false로 설정
+		</div>
+		<div>
+			for문에서 미세 최적화를 시도하는 두가지 변형패턴
+			<ul>
+				<li>변수를 하나 덜 쓴다(max가 없다) <em>???????</em></li>
+				<li>카운트를 거꾸로 하여 0으로 내려간다. 0과 비교하는 것이 배열의 length또는 0 이 아닌 값과 비교하는 것보다 대게 더 빠르기 때문</li>
+			</ul>
+		</div>
+		<em>length접근할때 유의, i++고려, max에서 --해서 0으로 미세 최적화 고려</em>
+
+		<h2 id="con4">2.4 for-in 루프</h2>
+		<div>
+			<ul>
+				<li>for-in 루프는 객체를 순회할 때 사용</li>
+				<li>배열을 순회할때에도 쓸 수 있지만, 권장사항은 아니다.</li>
+				<li>객체의 프로퍼티를 순회할 때는 프로토토타입 체인으르 따라 상속되느느 프로퍼티들을 걸러내기 위해 <strong>hasOwnProperty()</strong>메서드를 사용해야 한다.</li>
+				<li>개발자가 코드에 확신을 가지고 있다면, hasOwnProperty()를 사용하지 않아도 되며, 이 경우 속도가 약간 개선됨</li>
+			</ul>
+		</div>
+		<h3>hasOwnProperty() 를 적용한 다양한 경우들</h3>
+		<div>
+			<ul>
+				<li>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+						<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>(<span style="color:#ff3399">var</span>&nbsp;i&nbsp;<span style="color:#ff3399">in</span>&nbsp;man){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(man.hasOwnProperty(i)){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(i,<span style="color:#ffd500">":"</span>,&nbsp;man[i]);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					<p>Object.prototype 에서 hasOwnProperty()를 호출하는 것도 또하나의 패턴이다.</p>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+						<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>(<span style="color:#ff3399">var</span>&nbsp;i&nbsp;<span style="color:#ff3399">in</span>&nbsp;man){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(<span style="color:#4be6fa">Object</span>.<span style="color:#4be6fa">prototype</span>.hasOwnProperty.call(man,&nbsp;i)){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(i,<span style="color:#ffd500">":"</span>,&nbsp;man[i]);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					<p>프로퍼티 탐색이 Object까지 멀리 거슬러 올라가지 않게 하려면 지연변수를 사용하여 이 메서드를 '캐쉬'하면 된다.</p>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;i,&nbsp;hasOwn&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">Object</span>.<span style="color:#4be6fa">prototype</span>.hasOwnProperty;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>(i&nbsp;<span style="color:#ff3399">in</span>&nbsp;man){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(hasOwn.call(man,&nbsp;i)){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(i,&nbsp;<span style="color:#ffd500">":"</span>,&nbsp;man[i]);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con5">2.5 내장 생성자 프로토타입 확장하기 / 확장하지 않기</h2>
+		<div>
+			Object(), Array(), Function()과 같은 내장 생성자의 프로토타입을 확장하는 것은 좋으나, 코드가 예측에서 벗어나는 일이 많아지기 때문에 코드의 지속성이 심각하게 저해될수 있다. <br>
+			루프안에서 <strong>hasOwnProperty()</strong>를 사용하지 않았다면 임의로 프로토타입에 추가된 프로퍼티가 튀어나와 혼동을 일으킬수도 있다.
+			<p>생성자 프로토타입을 확장하려면 아래와 같은 조건을 모두 만족시켜야 한다.</p>
+			<ol>
+				<li>해당 기능이 ECMAScript의 향후 버전이나 자바스크립트 구현에서 일관되게 내장 메서드로 구현될 예정이다. 예를들어 ECMAScript5 에 기술되었으나 아직 브라우저에 내장되지 않은 메서드라면 추가할 수 있다. 이 경우에는 유용한 메서드를 미리 정의하는 것이라고 할 수 있다.</li>
+				<li>
+					이 프로퍼티 또는 메서드가 이미 존재하는지, 즉 이미 코드 어딘가에 구현되어 있거나, 지원브라우저 중 일부 자바스크립트 엔진에 내장되어 있는지 확인한다.
+				</li>
+				<li>
+					이 변경사항을 명확히 문서화하고 팀 내에서 공유한다.
+				</li>
+			</ol>
+		</div>
+
+		<h2 id="con6">2.6 switch 패턴</h2>
+		<div>
+			<dt>switch</dt>
+			<dd>
+				<ul>
+					<li>if문은 프로그램이 실행되는 흐름에 분기(branch), else if를 사용해 다중분기를 수행</li>
+					<li>모든 분기가 동일한 표현식의 값에 의해 결정될 때는 if(/else if)가 최선이 아니다.</li>
+					<li>switch문은 if문에서처럼 동일한 표현식이 여러 번 반복되는 문제점을 확실히 해결</li>
+				</ul>
+			</dd>
+			<dd>- 자바스크립트 완벽가이드</dd>
+		</div>
+		<div>
+			다음 패턴을 따르면 switch문의 가독성과 견고성을 향상시킬 수 있다.
+			<ul>
+				<li>
+					각 case문을 switch문에 맞추어 정렬한다 (일반적인 중괄호 내 들여쓰기 규칙에서 벗어나는 방식이다.)
+				</li>
+				<li>
+					각 case문 안에서 코드를 들여쓰기 한다.
+				</li>
+				<li>
+					각 case문은 명확하게 break;로 종료한다.
+				</li>
+				<li>
+					break문을 생략하여 통과(fall-through)시키지 않는다. 그런 방법이 최선책이라는 확신이 있다면 해당 case에 반드시 기록을 남긴다. 코드를 읽는사람에게는 오류로 보일 수 있기 때문
+				</li>
+				<li>
+					상용하는 case문이 하나도 없을 때도 정상적인 결과가 나올 수 있도록 switch문 마지막에는 default;문을 쓴다.
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con7">2.7 암묵적 타입캐스팅 피하기</h2>
+		<div>
+			<p>완전항등연산자 쓰기: 표현식과 타입을 모두 확인하는 === 와 !== 연산자를 사용</p>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;zero&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">if</span>(zero&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">false</span>){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//zero는&nbsp;0이고&nbsp;false가&nbsp;아니기&nbsp;때문에&nbsp;이&nbsp;블록은&nbsp;실행되지&nbsp;않는다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;안티패턴</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">if</span>(zero&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">false</span>){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;이&nbsp;블록을&nbsp;실행된다.&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+		</div>
+
+		<h3>eval() 피하기</h3>
+		<div>
+			<ul>
+				<li>
+					동적인 프로퍼티에 접근할 때는 대괄호 표기법이 더 간단하고 좋은 방법이다. <br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;안티패턴</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;property&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"name"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">alert</span>(<span style="color:#ff3399">eval</span>(<span style="color:#ffd500">"obj."</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>property));</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;권장안</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;property&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"name"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">alert</span>(obj[property]);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					setInterval()과 setTimeout() 그리고 Function() 생성자에 문자열을 넘기는 것도 eval()을 사용하는 것과 비슷 -> 자제해야 함 <br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;안티패턴</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">setTimeout</span>(<span style="color:#ffd500">"myFunc()"</span>,&nbsp;<span style="color:#c10aff">1000</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">setTimeout</span>(<span style="color:#ffd500">"myFunc(1,&nbsp;2,&nbsp;3)"</span>,&nbsp;<span style="color:#c10aff">1000</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;권장안</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">setTimeout</span>(myFunc,&nbsp;<span style="color:#c10aff">1000</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">setTimeout</span>(<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;myFunc(<span style="color:#c10aff">1</span>,&nbsp;<span style="color:#c10aff">2</span>,&nbsp;<span style="color:#c10aff">3</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">},&nbsp;<span style="color:#c10aff">1000</span>);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					eval()을 사용해야 한다면, 그 대신에 new Function()사용 고려 <br>
+					eval()은 자신의 바깥쪽 유효범위에 접근하고 수정을 하 ㄹ수 있지만, Function은 그럴수 없다. <br>
+					new Function() 안에서 평가되는 코드는 지역 함수의 유효범위 안에서 실행되기 때문에 코드내에서 var로 선언된 변수들이 자동으로 전역변수가 되지 않는다.<br><br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;un);&nbsp;<span style="color:#999999">//"undefined"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;deux);&nbsp;<span style="color:#999999">//"undefined"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;trois);&nbsp;<span style="color:#999999">//"undefined"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;isstring&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"var&nbsp;un&nbsp;=&nbsp;1;&nbsp;console.log(un);"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">eval</span>(jsstring);&nbsp;<span style="color:#999999">//&nbsp;"1"&nbsp;이&nbsp;출력된다</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">jsstring&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"var&nbsp;deux&nbsp;=&nbsp;2;&nbsp;console.log(deux);"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">new</span>&nbsp;Function(jsstring)();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;"2"&nbsp;가&nbsp;출력된다&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">jsstring&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"var&nbsp;trois&nbsp;=&nbsp;3;&nbsp;console.log(trois);"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">(<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">eval</span>(jsstring)</div><div style="padding:0 6px; white-space:pre; line-height:130%">}());&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;"3"&nbsp;이&nbsp;출력된다</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;un);&nbsp;<span style="color:#999999">//"number"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;deux);&nbsp;<span style="color:#999999">//"undefined"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;trois);&nbsp;<span style="color:#999999">//"undefined"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">(<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;local&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">1</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">eval</span>(<span style="color:#ffd500">"local&nbsp;=&nbsp;3;&nbsp;console.log(local)"</span>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;3이&nbsp;출력된다</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(local);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;3이&nbsp;출력된다</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">}());</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">(<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;local&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">1</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;Function(<span style="color:#ffd500">"console.log(typeof&nbsp;local);"</span>)();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//undefined가&nbsp;출력된다&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">}());</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con8">2.8 parseInt()를 통한 숫자 변환</h2>
+		<div>
+			<ul>
+				<li>
+					parseInt()에서 보통 두번째 매개변수를 생략하는 경우가 많지만, 파싱할 문자열이 0으로 시작할 경우 문제가 생긴다.
+				</li>
+				<li>
+					일관성 없고 예측을 벗어나는 결과를 피하려면 항상 기수 매개변수를 지정해주어야 한다.<br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;month&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"06"</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;year&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"09"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;month&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">parseInt</span>(month,&nbsp;<span style="color:#c10aff">10</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;year&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">parseInt</span>(year&nbsp;,&nbsp;<span style="color:#c10aff">10</span>);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div>
+			<dl>
+				<dt>parseInt()와 Number()의 차이</dt>
+				<dd>
+					<h3>Number()</h3>
+					<ul>
+						<li>문자열로 되어있는 숫자를 실제 숫자로 변환시켜주는 함수</li>
+						<li>단, 문자열이 숫자로만 되어있어야함</li>
+						<li>문자열안에 숫자와 문자가 섞여 있으면 NaN 값을 반환 </li>
+					</ul>
+					<h3>parseInt()</h3>
+					<ul>
+						<li>문자열을 정수로 변환</li>
+						<li>자열안에 숫자와 문자가 섞여도 되지만 앞자리는 꼭 숫자여야함 </li>
+					</ul>
+				</dd>
+			</dl>
+		</div>
+
+		<h2 id="con9">2.9 코딩규칙</h2>
+		<div>
+			코드의 일관성이 유지되고 예측가능해지며 읽고 이해하기가 쉬워지기 때문에 필요
+		</div>
+
+		<h3>들여쓰기</h3>
+		<div>
+			<ul>
+				<li>이 책은 JSLint의 기본값이기도 한 스페이스 4개의 들여쓰기</li>
+				<li>중괄호 안에 있으면 들여쓰기 !</li>
+			</ul>
+		</div>
+
+		<h3>중괄호</h3>
+		<div>
+			<ul>
+				<li>중괄호는 생략할 수 있을때도 항상 써야한다.</li>
+				<li>
+					<strong>여는 중괄호 위치 </strong><br>
+					자바스크립트는 까다롭지 않아서 세미콜론을 쓰지 않고 행을 종료하면 알아서 추가해주기 때문에, 여는 중괄호는 다음행보다는 선행하는 명령문과 동일한 행에.!
+				</li>
+			</ul>
+		</div>
+
+		<h3>공백</h3>
+		<div>
+			다음과 같은 위치에 공백을 쓰면 좋다.
+			<ul>
+				<li>
+					for루프의 구성요소를 분리하는 세미콜론 다음<br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>(<span style="color:#ff3399">var</span>&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">0</span>;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">&lt;</span><span style="color:#c10aff">10</span>;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">1</span>){...}</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					for루프내에서 여러개의 변수(i 와 max)를 초기화한 다음<br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>(<span style="color:#ff3399">var</span>&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">0</span>,&nbsp;max<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">10</span>;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">&lt;</span>max;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">1</span>){....}</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					배열의 원소들을 분리하는 쉼표 다음.<br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;a&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;[<span style="color:#c10aff">1</span>,&nbsp;<span style="color:#c10aff">2</span>,&nbsp;<span style="color:#c10aff">3</span>];</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					<strong>객체의 프로퍼티를 분리하는 쉼표다음, 프로퍼티의 이름과 값을 분리하는 클론 다음</strong><em>my</em><br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;o&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{a:&nbsp;<span style="color:#c10aff">1</span>,&nbsp;b:&nbsp;<span style="color:#c10aff">2</span>};</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					함수의 인자들을 분리할 때<br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">myFunc(a,&nbsp;b,&nbsp;c)</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+						</table>
+					</div>
+				</li>
+				<li>
+					<strong>함수를 정의하는 중괄호 전</strong><em>my</em><br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0"><tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;myFunc()&nbsp;{}</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+						</table>
+					</div>
+				</li>
+				<li>
+					<strong>익명 함수 표현식에서 Function 다음.</strong><em>my</em><br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;myFunc&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;()&nbsp;{};</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+				<li>
+					<strong>모든 연산자와 피연산자를 스페이스로 분리</strong><em>my</em><br>
+				</li>
+				<li>
+					함수, if-else문, 루프, 객체 리터럴의 여는 중괄호({) 전
+				</li>
+				<li>
+					닫는 중괄호(})와 else 또는 while 사이
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con10">2.10 명명규칙</h2>
+		<div>
+			<ul>
+				<li>
+					<strong>생성자를 대문자</strong>로 시작
+				</li>
+				<li>
+					<strong>단어구분</strong> 카멜표기법 !!! 함수가 아닌 변수의 경우 언더스코어(_)로 구분하는것도 좋은 방법
+				</li>
+				<li>
+					전역변수명으로 모든 글자를 대문자로 !
+				</li>
+				<li>
+					<strong>_private 규칙</strong><br>
+					- name_  또는 getElements_()와 같이 비공개라는 의미로 밑줕을 끝에 붙이기<br>
+					- _protected 프로퍼티에는 밑줄 한 개, __private 프로퍼티에는 밑줄 두개 사용<br>
+					-
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con11">2.11 주석작성</h2>
+		<div>
+			일반적으로 모든 함수의 매개변수와 반환값에 대해서는 문서화할 필요가 있다. 이 외에, 특이하고 흥미로운 알고리즘이나 기법을 사용한 경우에도 주석을 단다.
+		</div>
+
+		<h2 id="con12">2.12 API 문서 작성</h2>
+		<div>
+			<ul>
+				<li>특정한 형식에 맞추어 코드블록을 작성한다. </li>
+				<li>도구를 실행해 코드와 주석을 파싱한다. </li>
+				<li>도구가 실행 결과를 발행한다. 대부분은 HTML 페이지 형식으로 이루어져 있다.</li>
+			</ul>
+		</div>
+		<h3>YUIDoc 예제 </h3>
+		<div>
+			<a href="http://jspatterns.com/book/2/" target="_blank">http://jspatterns.com/book/2/</a>
+		</div>
+
+		<h2 id="con13">2.13 독자를 위한 문서 작성</h2>
+		<div>
+			독자를 위한 문서 작성이란, 코드 또는 APO문서를 작성할 때 다른 누간가가 읽을 것이라고 생각하고 임하라는 말. <br>이 사실 자체만으로도 눈앞의 문제를 해결하는 좀 더 나은 방법을 생각해보게 된다.
+		</div>
+
+		<h2 id="con14">2.14 동료리뷰</h2>
+		<div>
+			<ul>
+				<li>
+					동료 리뷰를 거치면 좀 더 명확한 코드를 작성하고 품질 개선에 도움이 된다.
+				</li>
+				<li>
+					코드작성자와 리뷰어 모두 지식을 교환 및 공유하게 되고, 서로의 경험과 개개인의 접근방식을
+					배울 수 있다.
+				</li>
+				<li>
+					CVS, 서브버전, Git 등의 소스관리 시스템 활용
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con15">2.15 출시 단계의 압축</h2>
+		<div>
+			<ul>
+				<li>
+					압축이란, 자바스크립트 코드에서 공백, 주석 및 기타 중요하지 않은 부분들으르 삭제 함으로써 서버에서 브라우저로 전송되는 파일크기를 감소시키는 공정
+				</li>
+				<li>
+					페이지 로딩속도를 개선한다. 대개 용량이 반이상 줄어들 정도로 절약효과가 있어, 출시 준비가 완료된 스크립트에는 반드시 압축을 적용
+				</li>
+				<li>코드 압축이 페이지 성능을 향상시키는 데 중요하지만, 이것은 압축도구가 할일
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con16">2.16 JSLint 실행</h2>
+		<div>
+			JSLint 가 잡아내는 위반사례
+			<ul>
+				<li>
+					실행되지 않는 코드
+				</li>
+				<li>
+					변수를 정의하기 전에 사용한 경우
+				</li>
+				<li>
+					불안정한 UTF 문자
+				</li>
+				<li>
+					void, width, eval을 사용한 경우
+				</li>
+				<li>
+					 정규식 내에서 부적절하게 이스케이프한 문자
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con17">2.17 요약</h2>
+		<div>
+			<ul>
+				<li>
+					전역변수 최소화 : 애플리케이션 당 전역변수가 한개만 존재하는 것이 이상적
+				</li>
+				<li>
+					함수 내 var 선언을 한번만 사용 : 단일한 위치에 모든 변수를 모아놓고 지켜볼 수 있고, 호이스팅으로 인해 발생하는 예기치 못한 부작용을 방지
+				</li>
+				<li>
+					for루프와 for-in루프, switch문에 대해
+				</li>
+				<li>
+					eval()은 사악하다
+				</li>
+				<li>
+					 내장 생성자 프로토타입을 확장하지 앟는다.
+				</li>
+				<li>
+					코드 작성 규칙을 준수한다. 공백, 들여쓰기를 일관성있게 사용하고, 중괄호와 세미콜론을 생략할 수 있더라도 반드시 쓴다.
+				</li>
+				<li>
+					 생성자, 함수, 변수명에 명명규칙을 준수한다. <em>(명명규칙 수립필요)</em>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<a href="#" class="btn_top">TOP</a>
+	<footer>
+		<address>Jewdri . 출처 : JavaScript Patterns</address>
+	</footer>
+</div>
+</body>
+</html>

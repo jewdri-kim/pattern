@@ -1,0 +1,38 @@
+/* reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,textarea,button{margin:0;padding:0}
+fieldset,img{border:0 none}
+dl,ul,ol,menu,li{list-style:none}
+blockquote,q{quotes:none}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}
+input,select,textarea,button{vertical-align:middle}
+input:focus,button:focus,textarea:focus{outline:none;}
+button{border:0 none;background-color:transparent;cursor:pointer}
+body{background:#fff;-webkit-text-size-adjust:none;word-break:break-all}
+body,th,td,input,select,textarea,button{font-size:13px;font-family:"Nanum Barun Gothic", "Apple SD Gothic Neo", sans-serif, helvetica, arial;font-weight:400; color:#333}
+a{color:#666;text-decoration:none}
+a:active,a:hover{text-decoration:none;}
+address,caption,cite,code,dfn,em,var{font-style:normal;font-weight:400}
+.clear{clear:both}
+figure{line-height:0}
+*,*:before,*:after{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
+.blind,legend{display:block;overflow:hidden;position:absolute;top:-1000em;left:0}
+strong {font-weight:600}
+
+.wrap{padding-top:50px;}
+header{position:fixed;top:0;left:0;z-index:100;width:100%;height:50px;padding:0 20px;line-height:50px;background:#fff;border-bottom:1px solid #efefef;}
+header h1{display:inline-block;margin-right:10px;}
+.content{padding:20px;margin:0 auto;text-align:center;}
+.item_list{display:inline-block;position:relative;text-align:left;}
+.item_list>li{position:absolute;width:300px;border-radius:10px;background:#fff;transition:0.5s ease;}
+.item_list>li>a{display:block;padding:15px;}
+.item_list>li:hover{background:#efefef;}
+.item_list>li>a>img{display:block;max-width:100%;min-width:100%;border-radius:10px}
+.item_list>li>a>dl{margin-top:10px;}
+.item_list>li>a>dl dt{font-size:15px;font-weight:600;color:#333;}
+.item_list>li>a>dl dd{margin-top:10px;color:#666;}
+.item_list>li>a>dl .author{text-align:right;color:#888;}
+
+@media (max-width:1280px){
+    .content{width:100%;}
+}
+

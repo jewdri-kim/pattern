@@ -1,0 +1,727 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name ="format-detection" content ="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>04_함수</title>
+<style type="text/css">
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,textarea,button {margin:0;padding:0}
+a {color:#1b52b1;text-decoration:underline}
+a:active, a:hover {text-decoration:underline}
+li ul{padding-left:10px;}
+h1 {font-size:25px;padding-top:10px;}
+h2 {color:#000b72;font-size:22px;padding-bottom:10px;padding-top:10px;border-bottom:1px solid #d0d0d0;}
+h3 {font-size:14px;padding:10px 20px;background:#d0d0d0;}
+header h2 {margin-top:20px;font-size:14px;padding:10px 20px;background:#d0d0d0;color:#333;}
+h4 {color:#000;padding:10px 20px;border:1px solid #d0d0d0;}
+
+section {padding:10px;}
+article {padding:20px;}
+xmp {margin:2%;background:#f1f1f1;white-space:pre-line;padding:0 2% 1% 2%;}
+pre{margin-bottom:20px;background:#000;white-space:pre-line;padding:1% 2% 1% 2%;color:#ff0;font-size:16px;font-family:tahoma;}
+pre span{color:#fff;font-size:14px;}
+header > div, section > div {margin-bottom:20px;border:1px solid #d0d0d0;padding:5px 30px;}
+.colorscripter-code{border:0;padding:0;}
+.colorscripter-code table{width:100%;}
+.data_box table td{text-align:center;}
+ul {padding:10px 0;}
+ol {padding-left:20px;}
+p {padding-top:10px;}
+.btn_top{display:inline-block;position:fixed;bottom:10px;right:10px;width:50px;height:50px;line-height:50px;background:#d0d0d0;color:#000;text-align:center;}
+footer{text-align:right;}
+section em{display:block;color:#595;}
+</style>
+</head>
+<body>
+<div class="wrap guide_wrap">
+	<header>
+		<h1>04_함수</h1>
+
+		<h2>목차</h2>
+		<div>
+			<ol>
+				<li><a href="#con1">4.1 배경지식</a></li>
+				<li><a href="#con2">4.2 콜백패턴</a></li>
+				<li><a href="#con3">4.3 함수 반환하기</a></li>
+				<li><a href="#con4">4.4 자기 자신을 정의하는 함수</a></li>
+				<li><a href="#con5">4.5 즉시 실행 함수</a></li>
+				<li><a href="#con6">4.6 즉시 객체 초기화</a></li>
+				<li><a href="#con7">4.7 초기화 시점의 분기</a></li>
+				<li><a href="#con8">4.8 함수 프로퍼티 - 메모제이션(Memoization)패턴</a></li>
+				<li><a href="#con9">4.9 설정 객체 패턴</a></li>
+				<li><a href="#con10">4.10 커리(Curry)</a></li>
+				<li><a href="#con11">4.11 요약</a></li>
+			</ol>
+		</div>
+	</header>
+	<section>
+		<h2 id="con1">4.1 배경지식</h2>
+		<div>
+			<p>자바스크립트 함수는 - 일급(first-class)객체, 유효범위(scope)를 제공 </p>
+			<ul>
+				<li>런타임, 즉 프로그램 실행 중에 동적으로 생성할 수 있다.</li>
+				<li>변수에 할당할 수 있고, 다른 변수에 참조를 복사할 수 있으며, 확장가능하고, 몇몇 특별한 경우를 제외하면 삭제할 수 있다.</li>
+				<li>다른 함수의 인자로 전달할 수 있고, 다른함수의 반환값이 될 수 있다.</li>
+				<li>자기자신의 프로퍼티와 메서드를 가질 수 있다.</li>
+			</ul>
+		</div>
+		<div>
+			자바스크립트에서 함수는 호출하여 실행할 수 있는 객체라고 생각하면 된다.
+			<br>
+			<p>
+			코뿔소 205-206<br>
+			자바스크립트 함수를 변수에 할당할 수 있고, 다른 함수에 인자로 전달할수도 있다. 함수는 객체이기 때문에 프로퍼티를 저장할 수 있고 심지어는 함수의 메서드를 호출할 수도 있다. 다른 함수내에 중첩되어 정의될 수 있고 중첩된 함수는 해당 함수가 정의된 유효범위안의 어떤 변수에도 접근할 수 있다. - 클로저 \
+			</p>
+		</div>
+		<h3>선언문 VS 표현식</h3>
+		<div>
+			<ul>
+				<li>함수 객체를 매개변수로 전달, 객체 리터럴로 메서드를 정의</li>
+				<li>
+					함수의 name 프로퍼티를 사용해야 할 때는 선언문, 기명함수표현식으로
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;foo(){}</div><div style="padding:0 6px; white-space:pre; line-height:130%">foo.<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;bar&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(){};</div><div style="padding:0 6px; white-space:pre; line-height:130%">bar.<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;baz&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;baz(){};</div><div style="padding:0 6px; white-space:pre; line-height:130%">baz.<span style="color:#4be6fa">name</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+					3개다 나오는데?
+				</li>
+				<li>선언문보다 표현식을 선호하는 이유는, 표현식을 사용하면 함수가 다른 객체들과 마찬가지로 객체의 일종이며 어떤 특별한 언어 구성요소가 아니라는 사실이 좀 더 드러나기 때문</li>
+			</ul>
+		</div>
+		<h3>함수 호이스팅</h3>
+		<div>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//안티패턴</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//전역함수</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;foo(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">'global&nbsp;foo'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;bar(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">'global&nbsp;bar'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;hoistMe(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;foo);&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//function</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(<span style="color:#ff3399">typeof</span>&nbsp;bar);&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//undefined</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;foo();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//local&nbsp;foo</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;bar();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//typeError&nbsp;:&nbsp;bar&nbsp;is&nbsp;not&nbsp;a&nbsp;function</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">function</span>&nbsp;foo(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">'local&nbsp;foo'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;bar&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">'local&nbsp;bar'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">hoistMe();</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			지역변수 foo()는 나중에 정의되어도 상단으로 호이스팅 되어 정상동작!!<br>
+			반면, bar()의 정의는 호이스팅되지않고 선언문만 호이스팅! 때문에 bar()의 정의가 나오기 전까지는 undefined.
+		</div>
+
+		<h2 id="con2">4.2 콜백패턴</h2>
+
+		<h3>콜백예제 </h3>
+		<div>
+			함수는 객체다. 즉 함수를 다른 함수에 인자로 전달할 수 있다.
+
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;findNodes&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">10</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nodes&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;[],</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">while</span>(i){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">-</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">1</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nodes.push(<span style="color:#ffd500">'found'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>i);&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//nodes.push(found);&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;nodes;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;hide&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(nodes){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>,&nbsp;max&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;nodes.<span style="color:#4be6fa">length</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(nodes);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">for</span>(;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">&lt;</span>max;&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">1</span>){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//nodes[i].style.display&nbsp;=&nbsp;"none";</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nodes[i]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"edit"</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>i;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(nodes);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">hide(findNodes());</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+
+			<p>findNodes() 함수는 범용으로 쓸 수 있도록 실제 엘리먼트에는 어떤 작업도 하지 않고 단지 DOM노드의 배열을 반환하기만 하도록 유지하는 게 좋다. 노드를 수정하는 로직은 다른함수(hide)에 두자. </p>
+			-> 이 구현은 findNode() 에서 반환된 노드의 배열에 대해 hide()가 다시 루프를 돌아야 하기 때문에 비효율적!!
+
+		</div>
+		<h4>효율적인 콜백</h4>
+		<div>
+			<strong>findNode()에서 루프 순회하며 노드선택
+			-> 바로숨긴다면(수정) 재자 루프가 돌지않아 효율적!</strong><br>
+			findNode() 안에서 바로 숨기는로직(수정하는로직)을 구현하면 탐색과 수정로직의 결합으로 인해 범용 함수의 이미가 퇴색되므로 콜백패턴으로 !!!
+			<p>이거 좀 이상함!</p>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//findNodes()가&nbsp;콜백을&nbsp;받도록&nbsp;리팩터링</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;findNodes&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(callback){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">10</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nodes&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;[],</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//콜백함수를&nbsp;호출할&nbsp;수&nbsp;있는지&nbsp;확인</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(<span style="color:#ff3399">typeof</span>&nbsp;callbak&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">!</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"function"</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">false</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">while</span>(i){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i<span style="color:#0086b3"></span><span style="color:#ff3399">-</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#c10aff">1</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//여기서&nbsp;콜백실행</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(callback){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback(nodes[i]);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nodes.push(<span style="color:#ffd500">'found'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>i);&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//nodes.push(found);&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;nodes;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;hide&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(nodes){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nodes&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"edit"</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>i;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//nodes[i].style.display&nbsp;=&nbsp;"none";</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(nodes);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">findNodes(hide);</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+
+			<p>변수를 미리 선언해두면 의도치 않은 전역 변수가 생성되는 일이 업서서, 연쇄 할당문을 사용해도 문제가 되지 않는다.</p>
+		</div>
+
+		<h3>콜백과 유효범위</h3>
+		<div>
+			콜백이 객체의 메서드인 경우! - 콜백메서드가 자신이 속해있는 객체를 참조하기위해 this를 사용하면 예상치 않게 동작<br>그럴경우 아래와 같이 <br>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;myapp&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{};</div><div style="padding:0 6px; white-space:pre; line-height:130%">myapp.color&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"green"</span>&nbsp;;</div><div style="padding:0 6px; white-space:pre; line-height:130%">myapp.paint&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(node)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;node.style.color&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;this.color;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">findNodes(myapp.paint&nbsp;,&nbsp;myapp);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//findNodes(&nbsp;"paint"&nbsp;,&nbsp;myapp);</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;findNodes&nbsp;<span style="color:#ff3399">function</span>&nbsp;(callback,&nbsp;callback_obj)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;...</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>&nbsp;(<span style="color:#ff3399">typeof</span>&nbsp;callback&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"string"</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback&nbsp;callback_obj[callback];</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>&nbsp;(<span style="color:#ff3399">typeof</span>&nbsp;callback&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"function"</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback.call(callback_obj&nbsp;,&nbsp;found);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+				</table>
+			</div>
+		</div>
+
+		<h3>또 다른 콜백 패턴 및 예제</h3>
+		<div>
+			<ul>
+				<li>비동기 이벤트리스너</li>
+				<li>
+					타임아웃<br>
+					setTimeout(), setInterval() : window 객체에 의해 제공되는 메서드.<br>
+					콜백함수를 받아서 실행
+				</li>
+				<li>라이브버리에서의 콜백<br>
+					라이브러리는 범용적이고 재사용 할 수 있어야 한다.<br>
+					콜백은 이런 일반화에 도움이 된다.<br>
+					핵심기능에 집중하고 콜백의 형태로 연결고리를 제공하라.
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con3">4.3 함수 반환하기</h2>
+		<div>
+			함수 - 객체라, 반환값으로도 사용할 수 있다.<br>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;setup&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#c10aff">1</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#c10aff">2</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;};</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;my&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;setup();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//alert으로&nbsp;1출력</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">my();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//alert으로&nbsp;2출력</span></div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+				</table>
+			</div><br>
+			setup()은 반환된 함수를 감싸고 있기 때문에 <strong>클로저</strong>를 생성<br>
+			클로저는 코드외부에서는 접근할 수 없기 때문에, 비공개 데이터 저장을 위해 사용할 수 있다.
+			<br>아래예제 : 매번 호출할때마다 값을 증가시키는 카운터 <br>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;setup&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;count&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;(count&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">1</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;};</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;next&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;setup();</div><div style="padding:0 6px; white-space:pre; line-height:130%">next();&nbsp;&nbsp;&nbsp;<span style="color:#999999">//1반환</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">next();&nbsp;&nbsp;&nbsp;<span style="color:#999999">//2반환</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">next();&nbsp;&nbsp;&nbsp;<span style="color:#999999">//3반환</span></div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+				</table>
+			</div>
+		</div>
+
+
+		<h2 id="con4">4.4 자기 자신을 정의하는 함수</h2>
+		<div>
+			아래와 같은게 자기 자신을 정의하는 함수 !!<br>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;<span style="color:#ff3399">var</span>&nbsp;scareMe&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">"Boo"</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;scareMe&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">"Double&nbsp;boo!"</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">scareMe();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//Boo!</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">scareMe();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//Double&nbsp;boo!</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+				</table>
+			</div><br>
+			<ul>
+				<li>
+					장점 : 어떤 초기화 작업을 단한번만 수행할 경우에 불필요한 작업 반복 X, 재정의된 함수의 작업량이 적기 때문에 성능에 도움이 됨
+				</li>
+				<li>
+					단점 : 1. 재정의 이후, 원본함수에 추가했던 프로퍼티가 찾을 수 없게됨<br>
+					2. 함수가 다른이름으로 사용된다면 원본함수의 본문만 실행<br>
+					3. 객체의 메서드로 사용될 경우  또한 원본함수의 본문만<br>
+					<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+						<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+							<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;scareMe&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">"Boo"</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;scareMe&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">"Double&nbsp;boo!"</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;1.&nbsp;새로운&nbsp;프로퍼티를&nbsp;추가한다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">scareMe.property&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"properly"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;2.&nbsp;다른이름으로&nbsp;할당된다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;prank&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;scareMe;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;3.&nbsp;메서드로&nbsp;사용된다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;spoky&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;boo&nbsp;:&nbsp;scareMe</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//새로운이름으로&nbsp;호출</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">prank()&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;"Boo!"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">prank()&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;"Boo!"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(prank.property);&nbsp;<span style="color:#999999">//"properly"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//메서드로&nbsp;호출</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">spoky.boo();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;"Boo!"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">spoky.boo();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;"Boo!"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(spoky.boo.property);&nbsp;<span style="color:#999999">//"properly"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//자기자신을&nbsp;재정의한&nbsp;함수를&nbsp;사용</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">scareMe();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//Double&nbsp;boo!</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">scareMe();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//Double&nbsp;boo!</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(scareMe.property);&nbsp;<span style="color:#999999">//undefined</span></div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con5">4.5 즉시 실행 함수</h2>
+		<div>
+			즉시 실행함수 패턴은 함수가 선언되자마자 실행되도록 하는 문법<br>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">(<span style="color:#ff3399">function</span>&nbsp;()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">'watch&nbsp;out!'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}());</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<ul>
+				<li>함수를 함수 표현식으로 선언한다.</li>
+				<li>함수가 즉시 실행될 수 있도록 마지막에 괄호쌍을 추가한다.</li>
+				<li>함수를 변수에 할당하지 않을경우엔 전체함수를 괄호로 감싼다.</li>
+			</ul>
+			<p>
+				초기에 한번만 실행되고 재사용할 필요가 없는 경우에 즉시실행함수<br>
+				 -> 전역사용 최소화를 위해도 필요.<br>
+				 -> 즉시실행함수는 지역유효범위로 감싸기 때문에 전역으로 새어나가지 않는다.
+			</p>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">(<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;days&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;[<span style="color:#ffd500">'Sun'</span>,&nbsp;<span style="color:#ffd500">'Mon'</span>,&nbsp;<span style="color:#ffd500">'Tue'</span>,&nbsp;<span style="color:#ffd500">'Wed'</span>,&nbsp;<span style="color:#ffd500">'Thu'</span>,&nbsp;<span style="color:#ffd500">'Fri'</span>,&nbsp;<span style="color:#ffd500">'Sat'</span>],</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;today&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Date</span>(),</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'Today&nbsp;is&nbsp;'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>days[today.getDay()]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">'&nbsp;,&nbsp;'</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;today.getDate();</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(msg);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}());</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<p>
+				days, today, msg변수는 즉시실행함수안에 없었다면 전역변수가 되어 초기화 이후에도 계속 차지.
+			</p>
+		</div>
+
+		<h3>즉시 실행 함수의 매개변수</h3>
+		<div>
+			즉시 실행 함수에 인자를 전달 할 수 있다. <br>
+
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">(<span style="color:#ff3399">function</span>&nbsp;(who,&nbsp;when)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(<span style="color:#ffd500">"I&nbsp;met&nbsp;"</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;who&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"&nbsp;on&nbsp;"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;when);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}(<span style="color:#ffd500">"Jewdri"</span>,&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Date</span>()));</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<p>
+				위와같이 전역객체가 즉시 실행함수의 인자로 전달되면, 함수내에서 window를 사용하지 않고도 전역객체에 접근할 수 있다. -> 브라우저 외의 실행환경에서도 코드를 공통으로 사용가능
+			</p>
+			일반적으로 즉시 실행함수에 대한 인자를 너무 많이 전달하지 않는 것이 좋다.
+		</div>
+
+		<h3>즉시 실행 함수의 반환 값</h3>
+		<div>
+			함수이므로 값을 반환할 수 있고 반환된 값을 변수에 할당할 수 있다.<br>
+
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;result&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;(<span style="color:#ff3399">function</span>&nbsp;()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#c10aff">2</span><span style="color:#ff3399">+</span><span style="color:#c10aff">2</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}());</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;더&nbsp;간단한것&nbsp;같지만,&nbsp;마지막의&nbsp;()를&nbsp;눈여겨&nbsp;보지않으면&nbsp;오해의&nbsp;소지가&nbsp;있다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;result2&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#c10aff">2</span><span style="color:#ff3399">+</span><span style="color:#c10aff">2</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}();</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;아래와&nbsp;같이&nbsp;써도&nbsp;동일한&nbsp;결과</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;result3&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;(<span style="color:#ff3399">function</span>&nbsp;()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#c10aff">2</span><span style="color:#ff3399">+</span><span style="color:#c10aff">2</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">})();</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+
+			<p>
+				반환값으로 함수도 가능 -> 이 경우 즉시실행 함수의 유효범위를 사용해 특정 데이터를 비공개 상태로 저장하고 반환되는 내부 함수에서만 접근하도록 할수 있다.
+			</p><br>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;getResult&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;(<span style="color:#ff3399">function</span>&nbsp;()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;res&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">2</span><span style="color:#ff3399">+</span><span style="color:#c10aff">2</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;res;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">})());</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<p>
+				즉시 실행함수 -> 함수 반환하고 이 반환값이 getResult라는 변수에 할당된다. 이 함수는 즉시 실행 함수에서 미리 계산하여 클로저에 저장해둔 res라는 값을 반환환다.
+			</p>
+			<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;o&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;message:&nbsp;(<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;who&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"me"</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;what&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"call"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;what<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#ffd500">"&nbsp;"</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>who;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}()),</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;getMsg:&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;this.message;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">o.getMsg();&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//"call&nbsp;me"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">o.message;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//"call&nbsp;me"</span></div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+			</div>
+			<p>
+				즉시 실행함수는 객체 프로퍼티를 정의할때에도 사용. 어떤 객체의 프로퍼티가 객체가 있는동안에는 값이 변하지 않고, 처음에 값을 정의할때 적절한 계산을 위한 작업이 필요할 때 -> 즉시 실행함수로 감싼후, 즉시 실행함수의 반환값을 프로퍼티에 할당.
+			</p>
+		</div>
+
+		<h3>장점과 사용 방법</h3>
+		<div>
+			즉시 실행함수패턴은 전역변수를 남기지 않고 상당량의 작업을 할수 있게 해준다.<br>
+			 선언된 모든 변수는 스스로를 호출하는 함수의 지역변수가 되기 때문에 임시 변수가 전역공간을 차지 어지럽히지 않는다. <br>
+			 <ul>
+			 	<li>북마클릿(bookmarklet) : 어떤 페이지에서도 실행될 수 있고, 전역 네임스페이스를 깨끗하게 유지하면서 무간섭적인 상태로 유지 / 주소창에서 바로 실행 </li>
+			 	<li>독자적인 모듈로 감쌀 수 있다.</li>
+			 </ul>
+		</div>
+
+		<h2 id="con6">4.6 즉시 객체 초기화</h2>
+		<div>
+			전역 유효범위가 난잡해지지 않도록 하는 패턴 - 즉시실행함수, 즉시 객체 초기화 <br>
+			<strong>즉시 객체 초기화</strong> - 이 패턴은 객체가 생성된 즉시 init() 메서드를 실행해 객체를 사용 - 모든 초기화 작업을 처리 <br>
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">({</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;여기에&nbsp;설정&nbsp;값(설정&nbsp;상수)들을&nbsp;정의할&nbsp;수&nbsp;있다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;maxwidth:&nbsp;<span style="color:#c10aff">600</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;maxheight:&nbsp;<span style="color:#c10aff">400</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;유틸리티&nbsp;메서드&nbsp;또한&nbsp;정의할&nbsp;수&nbsp;있다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;gimmeMax:&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;this.maxwidth&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"x"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;this.maxheight;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;},</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//초기화</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;init:&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(this.gimmeMax());</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//더&nbsp;많은&nbsp;초기화&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}).init();</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">({</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;여기에&nbsp;설정&nbsp;값(설정&nbsp;상수)들을&nbsp;정의할&nbsp;수&nbsp;있다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;maxwidth:&nbsp;<span style="color:#c10aff">600</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;maxheight:&nbsp;<span style="color:#c10aff">400</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//&nbsp;유틸리티&nbsp;메서드&nbsp;또한&nbsp;정의할&nbsp;수&nbsp;있다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;gimmeMax:&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;this.maxwidth&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"x"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;this.maxheight;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;},</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//초기화</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;init:&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(this.gimmeMax());</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//더&nbsp;많은&nbsp;초기화&nbsp;작업들</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}.init());</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr></table>
+		</div>
+		<div>
+			객체 리터럴을 사용한 객체 생성과 똑같이 생각하면 된다. <br>
+			객체 리터럴도 괄호(그룹 연산자)로 감싸는데, 이는 자바스크립트 엔진이 중괄호를 코드 블록이 아니라, 객체리터럴로 인식하도록 지시하는 역할을 한다. <br>
+			그런 다음 닫는 괄호에 이어 init() 메서드를 즉시 호출한다.
+		</div>
+		<div>
+			<ul>
+				<li>
+					즉시 실행함수 패턴의 장점과 동일하다 - 전역네임스페이스 보호
+				</li>
+				<li>
+					초기화 작업이 복잡할때 전체 초기화 절차를 구조화 하는데도 도움이 된다. -> 비공개 도우미 함수들을 임시 객체의 프로퍼티로 정의하면, 즉시실행함수를 여기저기 흩어놓고 쓰는것보다 훨씬 구분하기 쉽다. <br>
+					=> 즉시실행함수가 여러개 쓰일일이 있을 때 하나의 즉시 객체에 모아놓고 쓰면 훨씬 구분이 쉽다는말?
+				</li>
+				<li>
+					단점 : 압축했을때 즉시 실행함수 패턴에 비해 효과적이지 못할 수 있다. 왜냐하면, 비공개 프로퍼티와 메서드의 이름은 더 짧게 변경되지 않기 때문에(압촉도구관점에서는 그런방식이 안전)
+				</li>
+				<li>
+					이 패턴은 즉시실행함수와 마찬가지로 일회성 작업에 적합.<br>
+					init()이 완료된 이후에도 객체의 참조를 유지하고 싶다면 init() 마지막에  return this; 를 추가
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con7">4.7 초기화 시점의 분기</h2>
+		<div>
+			초기화 시점의 분기(로드타임 분기)는 최척화 패턴이다. <br>
+			어떤 조건이 프로그램의 실행하는 동안 변경되지 않는 게 확실할 경우, <strong>조건을 단 한번만 확인하는 것이 바람직하다.</strong><br>
+			ex) 브라우저 탐지(또는 기능 탐지)가 전형적인 예다.
+		</div>
+
+		<div>
+			DOM 엘리먼트의 계산된 스타일을 확인하거나 이벤트 핸들러를 붙이는 작업도 초기화 시점 분기 패턴의 ㅈ이점을 살릴 수 있다. <br>
+			대부분의 개발자는, 클라이언트 측 프로그래밍을 하는 동안 적어도 한번은, 이벤트 리스너를 등록하고 해제하는 메서드를 가지는 다음과 같은 유틸리티를 작성해 보았을 것이다.
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//변경이전</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;utils&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;addListener&nbsp;:&nbsp;<span style="color:#ff3399">function</span>(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(<span style="color:#ff3399">typeof</span>&nbsp;<span style="color:#4be6fa">window</span>.<span style="color:#4be6fa">addEventListener</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'function'</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el.<span style="color:#4be6fa">addEventListener</span>(type,&nbsp;fn,&nbsp;<span style="color:#c10aff">false</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<span style="color:#ff3399">else</span>&nbsp;<span style="color:#ff3399">if</span>&nbsp;(<span style="color:#ff3399">typeof</span>&nbsp;<span style="color:#4be6fa">document</span>.attachEvent&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'function'</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el.attachEvent(<span style="color:#ffd500">'on'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>type,&nbsp;fn);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<span style="color:#ff3399">else</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el[<span style="color:#ffd500">'on'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>tyle]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;fn;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;},</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;removeListener&nbsp;:&nbsp;<span style="color:#ff3399">function</span>(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//거의&nbsp;동일한&nbsp;코드&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">utils.addListener(<span style="color:#4be6fa">window</span>,&nbsp;<span style="color:#ffd500">"load"</span>,init);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;init()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//alert('init');</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;area&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">document</span>.<span style="color:#4be6fa">getElementById</span>(<span style="color:#ffd500">'btn_top'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;area.<span style="color:#4be6fa">onclick</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">'click'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<!--script>
+			//변경이전
+			var utils = {
+				addListener : function(el, type, fn) {
+					if(typeof window.addEventListener === 'function') {
+						el.addEventListener(type, fn, false);
+					}else if (typeof document.attachEvent === 'function') {
+						el.attachEvent('on'+type, fn);
+					}else {
+						el['on'+tyle] = fn;
+					}
+				},
+				removeListener : function(el, type, fn) {
+					//거의 동일한 코드
+				}
+			};
+			utils.addListener(window, "load",init);
+			function init() {
+				//alert('init');
+				var area = document.getElementById('btn_top');
+				area.onclick = function(){
+					alert('click');
+				}
+			}
+
+		</script-->
+		<div>
+			위의 코드는 약간 비효율적이다. utils.addListener() 나 utils.removeListener()를 호출할 때마다 똑같은 확인 작업이 반복해서 실행된다. <br>
+			초기화 시점 분기를 이용하면, 처음 자바스크립트를 로딩하는 동안에 브라우저 기능을 한번만 확인한다. <br> 확인과 동시에 함수가 페이지의 생명주기동안 어떻게 동작할지를 재정의 한다. 다음은 초기화 시점 분기에 대한 접근법을 보여주는 예제다.
+		</div>
+		<script>
+			//변경이후
+			//인터페이스
+			var utils = {
+				addListener : null,
+				removeListener : null
+			};
+			//구현
+			if(typeof window.addEventListener === 'function') {
+				utils.addListener = function (el, type, fn) {
+					el.addEventListener(type, fn, false);
+				}
+				utils.removeListener = function (el, type, fn) {
+					el.removeEventListener(type, fun, false);
+				}
+			}else if (typeof document.attachEvent === 'function') {
+				utils.addListener = function (el, type, fn) {
+					e.attachEvent('on'+type, fn);
+				}
+				utils.removeListener = function (el, type, fn) {
+					el.datachEvent('on'+type, fn);
+				}
+			}else {
+				utils.addListener = function (el, type, fn) {
+					el['on'+type] = fn;
+				}
+				utils.removeListener = function (el, type, fn) {
+					el['on'+type] = null
+				}
+			}
+
+			utils.addListener(window, "load",init);
+
+			function init() {
+				var area = document.getElementById('btn_top');
+				area.onclick = function(){
+					alert('click');
+				}
+			}
+
+
+		</script>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//변경이후&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//인터페이스</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;utils&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;addListener&nbsp;:&nbsp;<span style="color:#4be6fa">null</span>,&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;removeListener&nbsp;:&nbsp;<span style="color:#4be6fa">null</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//구현</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">if</span>(<span style="color:#ff3399">typeof</span>&nbsp;<span style="color:#4be6fa">window</span>.<span style="color:#4be6fa">addEventListener</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'function'</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;utils.addListener&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el.<span style="color:#4be6fa">addEventListener</span>(type,&nbsp;fn,&nbsp;<span style="color:#c10aff">false</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;utils.removeListener&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el.removeEventListener(type,&nbsp;fun,&nbsp;<span style="color:#c10aff">false</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}<span style="color:#ff3399">else</span>&nbsp;<span style="color:#ff3399">if</span>&nbsp;(<span style="color:#ff3399">typeof</span>&nbsp;<span style="color:#4be6fa">document</span>.attachEvent&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'function'</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;utils.addListener&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.attachEvent(<span style="color:#ffd500">'on'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>type,&nbsp;fn);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;utils.removeListener&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el.datachEvent(<span style="color:#ffd500">'on'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>type,&nbsp;fn);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}<span style="color:#ff3399">else</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;utils.addListener&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el[<span style="color:#ffd500">'on'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>type]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;fn;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;utils.removeListener&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(el,&nbsp;type,&nbsp;fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;el[<span style="color:#ffd500">'on'</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>type]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">null</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">utils.addListener(<span style="color:#4be6fa">window</span>,&nbsp;<span style="color:#ffd500">"load"</span>,init);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;init()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//alert('init');</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;area&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">document</span>.<span style="color:#4be6fa">getElementById</span>(<span style="color:#ffd500">'btn_top'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;area.<span style="color:#4be6fa">onclick</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">alert</span>(<span style="color:#ffd500">'click'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			브라우저 탐지에 관한 주의사항 <br>
+			<ul>
+				<li>
+					브라우저의 기능을 섣불리 가정하지 말아야 한다.<br>
+					ex: window.addEventListener를 지원 X -> IE 이고 XMLHttpRequest도 지원하지 않을거라고 가정 X
+				</li>
+				<li>
+					브라우저의 역사를 놓고 보면 맞기도 하지만, 어떤 버전에서는 네이티브로 지원했으나 현재는 않을 수 도 있다.
+				</li>
+				<li>
+					일반적으로 브라우저의 기능은 독립적으로 변하기 때문에 가정해서 탐지하기 보다 초기화 시점의 분기를 사용해 개별적으로 탐지하는것이 가장 좋은 전략이다.
+				</li>
+			</ul>
+		</div>
+
+		<h2 id="con8">4.8 함수 프로퍼티 - 메모제이션(Memoization) 패턴</h2>
+		<div>
+			함수는 처음부터(생성될때부터) 프로퍼티와 메서드를 가지고 있다. (객체기 때문에)<br>
+			ex : 각 함수는 자동으로 length 프로퍼티를 갖는다. - 함수가 받는 인자의 개수 // arguments 도 ?
+			<em>my: 함수가 가지는 length 프로퍼티와 aruments.length의 차이가 있을까?</em>
+		</div>
+
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;func(a,&nbsp;b,&nbsp;c)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(func.<span style="color:#4be6fa">length</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">func(<span style="color:#c10aff">1</span>,&nbsp;<span style="color:#c10aff">2</span>,&nbsp;<span style="color:#c10aff">3</span>);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+
+		<div>
+			위와같은 특징으로 함수에 사용자 정의 프로퍼티를 추가할 수 있다.
+			<br>
+			<stron>메모제이션 패턴 : </stron> 함수에 프로퍼티를 추가하여 결과(반환값 )를 캐시하여 다음 호출 시점에 복잡한 연산을 반복하지 않을 수 있게  활용하는 방법 -> 함수내에 불필요한 작업을 피하기 위해 이전에 연산된 결과를 저장하고 사용하는 패턴
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;count1&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;fibonacci&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(n)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;count1<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;n&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">&lt;</span>&nbsp;<span style="color:#c10aff">2</span>&nbsp;?&nbsp;n:&nbsp;fibonacci(n&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">-</span>&nbsp;<span style="color:#c10aff">1</span>)&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;fibonacci(n&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">-</span>&nbsp;<span style="color:#c10aff">2</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>&nbsp;(<span style="color:#ff3399">var</span>&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">&lt;</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">10</span>;&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">1</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"&nbsp;=&nbsp;"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;fibonacci(i));</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ffd500">"count1&nbsp;=&nbsp;"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;count1);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			위 함수를 수행하면 무려 fibonacci함수가 453번이 실행된다(count1를 확인해보라) 이렇게 되면 성능에 막대한 영향을 준다. 따라서 위에 함수를 메모제이셔패턴으로 아래처럼 변경해보자.
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;count2&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;fibonacci2&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(){</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;memo&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;[<span style="color:#c10aff">0</span>,&nbsp;<span style="color:#c10aff">1</span>];</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;fib&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(n)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;count2<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;result&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;memo[n];</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>&nbsp;(<span style="color:#ff3399">typeof</span>&nbsp;result&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">!</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">'number'</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;fib(n<span style="color:#0086b3"></span><span style="color:#ff3399">-</span><span style="color:#c10aff">1</span>)&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;fib(n<span style="color:#0086b3"></span><span style="color:#ff3399">-</span><span style="color:#c10aff">2</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memo[n]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;result;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;result;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;fib;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}();</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">for</span>&nbsp;(<span style="color:#ff3399">var</span>&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">0</span>;&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">&lt;</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">10</span>;&nbsp;i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#c10aff">1</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;<span style="color:#4be6fa">console</span>.log(i&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"&nbsp;=&nbsp;"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;fibonacci2(i));</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#4be6fa">console</span>.log(<span style="color:#ffd500">"count2&nbsp;=&nbsp;"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;count2)</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			이렇게 변경되면 29번만 함수가 실행된다(count2를 확인해보자) 전자의 경우에는 1~10번까지의 모든 각각의 수를 비교하기 위해서 fibonacci 함수가 호출되었으나. 후자인 경우에는 핵심은 memo라는 배열을 만들고 그 배열을 클로저 를 통해 접근한다. 로직을 처리하는 클로저 가 반복되서(피보니치수열을 찾을때까지) 수행됨으로 더 빠르게 처리할 수 있는 것이다.
+		</div>
+
+
+		<div>
+			책 예제 : 객체 인자를 JSON 문자열로 직렬화 하고 이 문자열을 cache객체에 키로 사용
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;myFunc&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;cachekey&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;JSON.stringify(<span style="color:#4be6fa">Array</span>.<span style="color:#4be6fa">prototype</span>.slice.call(arguments)),&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(<span style="color:#0086b3"></span><span style="color:#ff3399">!</span>myFunc.cache[cachekey])&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//비용이&nbsp;많이드는&nbsp;수행...</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myFunc.cache[cachekey]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;result;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;myFunc.cache[cachekey];</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">myFunc.cache&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{};</div></div><div style="text-align:right; margin-top:-13px; margin-right:5px; font-size:9px; font-style:italic"><a href="http://colorscripter.com/info#e" target="_blank" style="color:#4f4f4f; text-decoration:none">Colored by Color Scripter</a></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+
+		<div>
+			위에코드 다른방법 : arguments.callee를 사용 (ECMAScript 5 스트릭트 모드에서 허용X)
+		</div>
+
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;myFunc&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(param)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;f&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;arguments.callee,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(<span style="color:#0086b3"></span><span style="color:#ff3399">!</span>f.cache[param])&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#999999">//비용이&nbsp;많이&nbsp;드는&nbsp;수행..</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f.cache[param]&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;result;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>.f.cache[param];</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+
+		<h2 id="con9">4.9 설정 객체 패턴</h2>
+		<div>
+			설정 객체 패턴 : 좀 더 깨끗한 API를 제공하는 방법 -> 설정을 객체로 해주는 것.
+		</div>
+		<div>
+			설정을 매개변수로 전달해준다면?
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;addPerson(first,&nbsp;last)&nbsp;{&nbsp;...&nbsp;}&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;addPerson(first,&nbsp;last,&nbsp;dob&nbsp;,&nbsp;gender,&nbsp;address)&nbsp;{&nbsp;...&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">addPerson&nbsp;(<span style="color:#ffd500">"Bruce"</span>,&nbsp;<span style="color:#ffd500">"Wayne"</span>&nbsp;,&nbsp;<span style="color:#ff3399">new</span>&nbsp;<span style="color:#4be6fa">Date</span>()&nbsp;,&nbsp;<span style="color:#4be6fa">null</span>,&nbsp;<span style="color:#4be6fa">null</span>,&nbsp;<span style="color:#ffd500">"batman"</span>);&nbsp;</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			필수와 선택적인 매개변수도 구별, 전달해야 하며, 순서에도 주의 해야한다. ->요구사항은 매번 바뀌기 떄문에 비효율적.
+		</div>
+
+		<div>
+			위와같은 문제로 매개변수를 하나의 객체로 만들어 전달한다.
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%">addPerson(conf);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;conf&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;:&nbsp;<span style="color:#ffd500">"batman"</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;first&nbsp;:&nbsp;<span style="color:#ffd500">"Bruce"</span>,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;last&nbsp;:&nbsp;<span style="color:#ffd500">"Wayne"</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			ex : 플러그인 제작시 사용 <a href="http://code.d2.co.kr/study/javascript/patterns/04_function/masonry2.2/test.html" target="_blank">예전꺼 </a>
+		</div>
+
+		<div>
+
+			<strong>위와같은 설정 객체의 장점</strong>
+			<ul>
+				<li>
+					매개변수와 순서를 기억할 필요가 없다.
+				</li>
+				<li>
+					선택적인 매개변수를 안전하게 생략 가능
+				</li>
+				<li>
+					읽기쉽고 유지보수하기 편하다
+				</li>
+				<li>
+					매개변수를 추가하거나 제거하기가 편하다.
+				</li>
+			</ul>
+
+			<strong>단점</strong>
+			<ul>
+				<li>매개변수의 이름을 기억해야 한다.</li>
+				<li>프로퍼티 이름은 압축X</li>
+			</ul>
+		</div>
+
+		<div>
+			이 패턴은 함수가 DOM엘리먼트를 생성할 떄나 엘리먼트의 CSS스타일을 지정할 떄 유용
+		</div>
+
+		<h2 id="con10">4.10 커리(Curry)</h2>
+		<div>
+			 커링(currying) <- 부분적인 함수적용 <- 함수적용
+		</div>
+
+		<h3>함수 적용</h3>
+		<div>
+			<ul>
+				<li>순수한 함수형 프로그래밍 언어에서, 함수는 불려지거나 호출된다고 표현하기보다 적용(apply)된다고 표현한다. </li>
+				<li>
+					자바스크립트에서도 Function.prototype.apply()를 사용해 함수를 적용
+				</li>
+			</ul>
+		</div>
+
+		<div>
+			함수 적용의 예
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//함수를&nbsp;정의한다.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;sayHi&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(who)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"Hello"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;(who&nbsp;?&nbsp;<span style="color:#ffd500">","</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;who&nbsp;:&nbsp;<span style="color:#ffd500">""</span>)&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"!"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//함수를&nbsp;호출한다.&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">sayHi();</div><div style="padding:0 6px; white-space:pre; line-height:130%">sayHi(<span style="color:#ffd500">"world"</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//함수를&nbsp;적용(apply)한다&nbsp;</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">sayHi.apply(<span style="color:#4be6fa">null</span>,&nbsp;[<span style="color:#ffd500">"hello"</span>]);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			apply() 는 두개의 매개변수를 받는다. <br><br>
+			- 첫번째  : 이 함수 내에 this와 바인딩할 객체 (null일 경우, 전역객체를 가리키게됨 -> 일반 함수호출과 같다.)<br>
+			- 두번째  : 배열과 비슷한 형태의 arguments 객체로 사용 <br>
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px; border-right:2px solid #4f4f4f"><div style="margin:0; padding:0; word-break:normal; text-align:right; color:#aaa; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="line-height:130%">1</div><div style="line-height:130%">2</div><div style="line-height:130%">3</div><div style="line-height:130%">4</div><div style="line-height:130%">5</div><div style="line-height:130%">6</div><div style="line-height:130%">7</div></div></td><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;alien&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;sayHi&nbsp;:&nbsp;<span style="color:#ff3399">function</span>(who)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"Hello"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;(who?&nbsp;<span style="color:#ffd500">","</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>who&nbsp;:&nbsp;&nbsp;<span style="color:#ffd500">""</span>)&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"!"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">alien.sayHi(<span style="color:#ffd500">'world'</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">sayHi.apply(alien,&nbsp;[<span style="color:#ffd500">"humans"</span>]);&nbsp;&nbsp;&nbsp;<span style="color:#999999">//에러?&nbsp;Uncaught&nbsp;ReferenceError:&nbsp;sayHi&nbsp;is&nbsp;not&nbsp;defined</span></div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>위에꺼 에러 -> 아래처럼 요로케?</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;alien&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;sayHi&nbsp;:&nbsp;<span style="color:#ff3399">function</span>(who)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"Hello"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;(who?&nbsp;<span style="color:#ffd500">","</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>who&nbsp;:&nbsp;&nbsp;<span style="color:#ffd500">""</span>)&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"!"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;jewdri&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{&nbsp;<span style="color:#4be6fa">name</span>:<span style="color:#ffd500">"jihye"</span>};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">alien.sayHi.apply(jewdri,&nbsp;[jewdri.<span style="color:#4be6fa">name</span>]);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			위의 두개의 예제들을 보면, 함소 호출 이라는 것 -> 함수적용을 가리키는 문법 설탕(syntatic sugar)이나 다름없다.
+		</div>
+
+		<div>
+			Function.prototype객체에 call()
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+				<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+					<tr><td style="padding:6px; border-right:2px solid #4f4f4f"><div style="margin:0; padding:0; word-break:normal; text-align:right; color:#aaa; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="line-height:130%">1</div><div style="line-height:130%">2</div><div style="line-height:130%">3</div><div style="line-height:130%">4</div><div style="line-height:130%">5</div><div style="line-height:130%">6</div></div></td><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;alien&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;sayHi&nbsp;:&nbsp;<span style="color:#ff3399">function</span>(who)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"Hello"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;(who?&nbsp;<span style="color:#ffd500">","</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>who&nbsp;:&nbsp;&nbsp;<span style="color:#ffd500">""</span>)&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"!"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">sayHi.call(alien,&nbsp;<span style="color:#ffd500">"humans"</span>);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+				</table>
+		</div>
+
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px; border-right:2px solid #4f4f4f"><div style="margin:0; padding:0; word-break:normal; text-align:right; color:#aaa; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="line-height:130%">1</div><div style="line-height:130%">2</div><div style="line-height:130%">3</div></div></td><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;배열을&nbsp;만들지&nbsp;않는&nbsp;두&nbsp;번째&nbsp;방법이&nbsp;더&nbsp;효과적이다&nbsp;.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">sayHi.apply(alien,&nbsp;[<span style="color:#ffd500">"humans"</span>]);&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">sayHi.call(alien,&nbsp;<span style="color:#ffd500">"humans"</span>)&nbsp;;</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;alien&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;sayHi&nbsp;:&nbsp;<span style="color:#ff3399">function</span>(who)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ffd500">"Hello"</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;(who?&nbsp;<span style="color:#ffd500">","</span><span style="color:#0086b3"></span><span style="color:#ff3399">+</span>who&nbsp;:&nbsp;&nbsp;<span style="color:#ffd500">""</span>)&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#ffd500">"!"</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;jewdri&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;{&nbsp;<span style="color:#4be6fa">name</span>:<span style="color:#ffd500">"jihye"</span>};</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//&nbsp;배열을&nbsp;만들지&nbsp;않는&nbsp;두&nbsp;번째&nbsp;방법이&nbsp;더&nbsp;효과적이다&nbsp;.</span></div><div style="padding:0 6px; white-space:pre; line-height:130%">alien.sayHi.apply(jewdri,&nbsp;[jewdri.<span style="color:#4be6fa">name</span>]);&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">alien.sayHi.call(jewdri,&nbsp;jewdri.<span style="color:#4be6fa">name</span>)&nbsp;;</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+
+		<div>
+			call() 메서드 역시 apply()와 매우 비슷한 문법 설탕 <br>
+			매개변수가 하나 일 때는 굳이 배열을 만들지 않고 요소하나만 지정하는 방법이 더 편하기 때문에 call()을 쓰는 게 더 나을 때도 있다.
+		</div>
+
+		<h3>부분적인 적용</h3>
+		<div>
+			인자 전부가 아니라 일부인자만 전달하는 것이 가능할까? -> 수학 함수를 직접 계산할 떄 흔히 쓰는방법과 비슷
+		</div>
+
+		<div>
+			설명을 위한 목적으로 코드 설명
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;add(x,&nbsp;y)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;x&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;y;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">add(<span style="color:#c10aff">5</span>,&nbsp;<span style="color:#c10aff">4</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;add(<span style="color:#c10aff">5</span>,&nbsp;y)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#c10aff">5</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;y;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;add(<span style="color:#c10aff">5</span>,&nbsp;<span style="color:#c10aff">4</span>,)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#c10aff">5</span>&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;<span style="color:#c10aff">4</span>;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			위에 코드처럼 1단계에서 부분적인 적용(일부인자만 적용한 상태 = 첫번째 인자만)이 되었다. 부분적인 적용을 실행하면 <strong>결과(정답)가 나오는 대신 또 다른 함수가 나온다.</strong>
+		</div>
+
+		<div>
+			가상의 partialApply()
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;add&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ff3399">function</span>(x,&nbsp;y)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;x&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;y;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">add.apply(<span style="color:#4be6fa">null</span>,&nbsp;[<span style="color:#c10aff">5</span>,&nbsp;<span style="color:#c10aff">4</span>]);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#999999">//부분적인&nbsp;적용</span></div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;newadd&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;add.partialApply(<span style="color:#4be6fa">null</span>,&nbsp;[<span style="color:#c10aff">5</span>]);</div><div style="padding:0 6px; white-space:pre; line-height:130%">newadd.apply(<span style="color:#4be6fa">null</span>,&nbsp;[<span style="color:#c10aff">4</span>]);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			부분적인 적용을 실행한 결과는 또 다른 함수이며, 이 함수는 다른 인자값을 적용하여 호출 할 수 있다. 이것은 사실 add(5)(4)와 같다. <br>
+			add(5)(4) -> add(5)를 적용하고 -> add5는 일부인자만 전달했으므로 함수를 반환 ->
+			반환된 함수안에서 반환된그함수(4) 적용하면 결과값 : add(5)(4)
+		</div>
+		<div>
+			위의 예제에서 존재하지 않는 partialApply() 메서드와 같은 함수를 구현해주면 <br>
+			부분적인 적용을 할 수 있다. => 함수가 부분적인 적용을 이해하고 처리할 수 있도록 만드는 과정을 <strong>커링</strong>이라고 한다.
+		</div>
+
+		<h3>커링(Curring)</h3>
+		<div>
+			커링 : 함수를 변형하는 과정.
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;add(x,&nbsp;y)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">if</span>(<span style="color:#ff3399">typeof</span>&nbsp;y&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span><span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#ffd500">"undefined"</span>)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ff3399">function</span>&nbsp;(y)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;x&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;y;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;x&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;y;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">add(<span style="color:#c10aff">3</span>)(<span style="color:#c10aff">4</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;add2000&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;add(<span style="color:#c10aff">2000</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">add2000(<span style="color:#c10aff">10</span>);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+
+		<div>
+			위와 같은 부분적인 적용을 범용적인 방법으로 처리. 어떤 함수라도 부분적인 매개변수를 받는 새로운 함수로 변형
+		</div>
+		<div class="colorscripter-code" style="color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; position:relative !important; overflow:auto">
+			<table class="colorscripter-code-table" style="margin:0; padding:0; border:none; background-color:#272727; border-radius:4px;" cellspacing="0" cellpadding="0">
+				<tr><td style="padding:6px 0"><div style="margin:0; padding:0; color:#f0f0f0; font-family:Consolas, 'Liberation Mono', Menlo, Courier, monospace !important; line-height:130%"><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;schofikelize(fn)&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;slice&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;<span style="color:#4be6fa">Array</span>.<span style="color:#4be6fa">prototype</span>.slice,</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stored_args&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;slice.call(arguments,&nbsp;<span style="color:#c10aff">1</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;<span style="color:#ff3399">function</span>()&nbsp;{</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">var</span>&nbsp;new_args&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;slice.call(arguments),&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;stored_args.concat(new_args);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;fn.apply(<span style="color:#4be6fa">null</span>,&nbsp;args);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;}</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">function</span>&nbsp;add(x,&nbsp;y)&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff3399">return</span>&nbsp;x&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">+</span>&nbsp;y;</div><div style="padding:0 6px; white-space:pre; line-height:130%">}</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%"><span style="color:#ff3399">var</span>&nbsp;newadd&nbsp;<span style="color:#0086b3"></span><span style="color:#ff3399">=</span>&nbsp;schofikelize(add,<span style="color:#c10aff">5</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">newadd(<span style="color:#c10aff">4</span>);</div><div style="padding:0 6px; white-space:pre; line-height:130%">&nbsp;</div><div style="padding:0 6px; white-space:pre; line-height:130%">schofikelize(add,<span style="color:#c10aff">6</span>)(<span style="color:#c10aff">7</span>);</div></div></td><td style="vertical-align:bottom; padding:0 2px 4px 0"><a href="http://colorscripter.com/info#e" target="_blank" style="text-decoration:none; color:white"><span style="font-size:9px; word-break:normal; background-color:#4f4f4f; color:white; border-radius:10px; padding:1px">cs</span></a></td></tr>
+			</table>
+		</div>
+		<div>
+			<em>my : 위에 예제는 매개변수 2개를 받는경우에 적용하지만, 매개변수 3개이상 일땐 ?
+			schofikelize()를 어떻게 수정하여야 할까?</em>
+		</div>
+
+		<h3>커링을 사용해야 할 경우</h3>
+		<div>
+			어떤 함수를 호출할 때 대부분의 매개변수가 항상 비슷하다면, 커링의 적합한 후보라고 할 수 있다. 매개변수 일부를 적용하여 새로운 함수를 동적으로 생성하면 이 함수는 반복되는 매개변수를 내부적으로 저장하여, 매번 인자를 전달하지 않아도 원본 함수가 기대하는 전체 목록을 채워놓을 것이다.
+		</div>
+
+		<h2 id="con11">4.11 요약</h2>
+		<div>
+			이 장은 함수에 관한 배경지식과 용어에 대해 다루었다. <br><br>
+			<strong>자바스크립트에서 함수의 중요한 두가지 특징</strong><br><br>
+			<ol>
+				<li>함수는 일급 객체다. (값으로 전달 가능, 프로퍼티와 메서드를 확장가능 )</li>
+				<li>
+					함수는 지역 유효범위를 제공한다. 다른 중괄호 묶음은 그렇지 않다.<br>
+					로컬 변수의 선언은 로컬 유효범위의 맨 윗부분으로 호이스팅 된다는점 기억해두어야 한다.
+				</li>
+			</ol>
+
+			<strong>함수를 생성하는 문법</strong><br><br>
+			<ol>
+				<li>기명 함수 표현식</li>
+				<li>함수 표현식(위와동일하지만 이름만 없는 것 ) ->익명함수</li>
+				<li>함수 선언문. 다른언어의 함수문법과 유사</li>
+			</ol>
+		</div>
+
+		<div>
+			위와같은 함수의 배경지식과 문법을 다룬후, 여러가지 유용한 패턴들..<br><br>
+			<ol>
+				<li>
+					<strong>API 패턴 : </strong>함수에 더 좋고 깔끔한 인터페이스를 제공<br><br>
+					<ul>
+						<li>콜백패턴 - 함수를 인자로 전달</li>
+						<li>설정객체 - 함수에 많은 매개변수를 전달할 때</li>
+						<li>함수반환 - 함수 반환값이 또다시 함수</li>
+						<li>커링 - 원본함수와 매개변수 일부를 물려받는 새로운 함수를 생성</li>
+					</ul>
+				</li>
+				<li>
+					<strong>초기화 패턴 : </strong> 초기화와 설정작업을, 전역을 써서 어지럽히지 않고 임시변수를 사용해 좀 더 깨끗하고 구조화된 방법으로 수행할수 있게 도와준다. <br><br>
+					<ul>
+						<li>즉시 실행 함수 - 정의되자마자 실행</li>
+						<li>즉시 객체 초기화 - 익명 객체 내부에서 초기화 작업을 한다음 즉시 호출할 수 있는 메서드 제공</li>
+						<li>초기화 시점의 분기 - 최초 코드 실행 시점에 코드를 분기하여 실행되는 동안 계속해서 분기가 발생하지 않도록 막아준다.</li>
+					</ul>
+				</li>
+				<li>
+					<strong>성능 패턴 : </strong> 코드의 실행 속도를 높이는 데 도움을 준다.<br><br>
+					<ul>
+						<li>메모제이션 패턴 - 함수 프로퍼티를 사용해 계산 된값을 다시 계산되지 않도록한다. </li>
+						<li>자기선언 함수 - 자기 자신을 덮어씀으로 두번째 호출 이후부터는 작업량이 줄어든다.</li>
+					</ul>
+				</li>
+			</ol>
+		</div>
+
+
+	<a href="#" class="btn_top" id="btn_top">TOP</a>
+	<footer>
+		<address>Jewdri . 출처 : JavaScript Patterns</address>
+	</footer>
+</div>
+</body>
+</html>

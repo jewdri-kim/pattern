@@ -1,0 +1,334 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>프로토타입클래스_핀터레스트따라해보기</title>
+<link rel="stylesheet" type="text/css" href="css/common.css">
+<style type="text/css">
+section.content{border:1px solid #000;}
+</style>
+<script type="text/javascript"  src="libs/jquery-1.11.0.min.js"> </script>
+<script type="text/javascript"  src="libs/stack.js"> </script>
+<script type="text/javascript"  src="libs/masonry2.js"> </script>
+<script>
+$(document).ready(function(){
+    $('header button').on('click',function(){
+        var cols = $(this).data('col');
+        $('.list1').Gallery({
+            items: $('.list1 li'),
+            col:cols,
+            itemWidth:300,
+            itemMargin:10
+        });
+
+        $('.list2').Gallery({
+            items: $('.list2 li'),
+            col:cols,
+            itemWidth:300,
+            itemMargin:10
+        });
+    });
+})
+$(window).on('load',function(){
+    $('.list1').Gallery({
+        items: $('.list1 li'),
+        col:5,
+        itemWidth:300,
+        itemMargin:50
+    });
+
+    $('.list2').Gallery({
+        items: $('.list2 li'),
+        col:3,
+        itemWidth:300,
+        itemMargin:10
+    });
+});
+</script>
+</head>
+
+<body>
+<div class="wrap">
+    <header>
+        <h1>Pinterest</h1>
+        <button data-col="6">6열</button>
+        <button data-col="5">5열</button>
+        <button data-col="4">4열</button>
+        <button data-col="3">3열</button>
+        <button data-col="2">2열</button>
+        <button data-col="1">1열</button>
+    </header>
+    <section class="content">
+        <ul class="item_list list1">
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_collection.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_shop_01.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_shop_02.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_shop_03.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/img_case_type_02.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/img_case_type_04.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/img_filter_01.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/img_filter_07.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_collection.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_shop_01.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+     <section class="content">
+        <ul class="item_list list2">
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_collection.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_shop_01.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_shop_02.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/br_shop_03.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <img src="img/pinterest/img_case_type_02.jpg" alt="">
+                    <dl>
+                        <dt>
+                           제목제목제목제목
+                        </dt>
+                        <dd>
+                            내용요약내용요약
+                        </dd>
+                        <dd class="author">
+                            Jewdri
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <footer>
+        <style>
+            footer em{color:#994bf1;}
+            footer ol li{position:relative;padding-left:15px;}
+            footer ol li:before{display:inline-block;content:'';position:absolute;top:8px;left:2px;width:3px;height:3px;background:#000;border-radius:100%;}
+        </style>
+        <h3>MEMO</h3>
+        <ol>
+            <li>마지막줄에서 가장 긴컨텐츠의 Y값을 가져와 전체 부모박스의 높이값으로 줘야했던것을 수정.
+            </li>
+            <li>
+               컨텐츠의 마지막줄에서 가장 짧은세로값을 가져오는것/ 가장 긴 세로값을 가져오는것 => 이부분이 중복되어서 따로 메서드화
+            </li>
+            <li>기본 1줄을 계산해서 넣어주는 부분도 조건문안에 조건문이 들어가는 형태라 따로 메서드화
+            </li>
+        </ol>
+    </footer>
+
+</div>
+</body>
+
+</html>
