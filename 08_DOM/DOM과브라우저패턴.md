@@ -80,3 +80,256 @@ margin = style.margin;
 document.querySelector("ul .selected");
 document.querySelector("#widget .class");
 ```
+- 위에 셀렉터 메서드는 DOM 메서드를 사용한 선택방식보다 항상 빠르다. 
+- 자주 접근하는 엘리먼트에 id속성을 추가하는 것도 성능 향상에 도움이 될 수 있다. document.getElementById 가 노드를 찾는 가장 빠른 방법이다. 
+
+### DOM조작
+
+- DOM업데이트시 브라우저는 화면을 다시 그리고, 엘리먼트들을 재구조화 하는데, 비용이 많이 들기 때문에 업데이트를 최소화 하는것이 좋다. 
+- 이를 위해 변경사항들을 일괄 처리하거나, 실제 문서 트리 외부에서 변경작업을 수행해야 한다. 
+
+문서에 노드를 붙일 때 피해야 할 안티패턴
+
+```javascript
+// 안티패턴
+// 노드를 만들고 곧바로 문서에 붙인다. 
+
+var p, t;
+
+p = document.createElement("p");
+t = document.createTextNode("first paragraph");
+p.appendChild(t);
+document.body.appendChild(p);
+
+p = document.createElement("p");
+t = document.createTextNode("second paragraph");
+p.appendChild(t);
+document.body.appendChild(p);
+```
+
+개선안은 문서조각을 생성해 외부에서 수정한 후, 처리가 완전히 끝난 다음에 실제 DOM에 추가하는 것이다. 
+
+```javascript
+var p, t, frag;
+
+frag = document.createDocumentFragment();
+
+p = document.createElement("p");
+t = document.createTextNode("first paragraph");
+p.appendChild(t);
+frag.appendChild(p);
+
+p = document.createElement("p");
+t = document.createTextNode("second paragraph");
+p.appendChild(t);
+frag.appendChild(p);
+
+document.body.appendChild(frag);
+```
+
+위와같은 방식은 <p>엘리먼트를  생성할때마다 문서를 변경하지 않고, 마지막에 단 한번만 문서를 변경한다. 
+
+하지만 문서에 이미 존재하는 트리를 변경할 때는??
+
+```javascript
+var oldnode = document.getElementById("result"),
+    clone = oldnode.cloneNode(true);
+
+// 본제본을 가지고 변경작업을 처리
+// 변경이 끝나고 나면 원래의 노드와 교체
+oldnote.parentNode.replaceChild(clone, oldnode);
+```
+
+
+
+## 8.3 이벤트
+
+### 이벤트 처리
+
+클릭할 떄마다 카운터의 숫자를 증가시키는 버튼.
+
+```html
+<button id="clickme">Click me : 0 </button>
+```
+
+```javascript
+// 차선책
+var b = document.getElementById("clickme"),
+    count = 0;
+b.onclick = function () {
+  count += 1;
+  b.innerHTML = "Click me : " + count;
+}
+```
+
+*이 패턴으로는 하나의 클릭이벤트에 여러개의 함수가 실행되게 하면서 동시에 낮은 결합도를 유지하기 어렵다. onclick에 이미 함수가 할당되었는지 확인하고, 할당되어 있다면 이미 존재하는 함수를 새로운 함수에 추가하고 이를 onclick의 값으로 대체하면된다. ???*
+
+addEventListener() 메서드를 사용하면 깔끔하다. IE8버전 이하에서는 attachEvent() 메서드를 사용해야 한다. 
+
+4장 초기화 시점 분기 패턴을 다룰 때 브라우저이벤트 리스너 유틸리티를 정의하는 구현예제를 보았다. 여기서는 버튼에 리스터를 붙여보자. 
+
+```javascript
+var b = document.getElementsById("clickme");
+
+if (document.addEventListener) { //W3C
+  b.addEventListener("click", myHandler, false);
+} else if (document.attachEvent) { //IE
+  b.attachEvent("onclick", myHandler);
+} else { //최후의 수단
+  b.onclick = myHandler;
+}
+function myHandler(e) {
+  var src, parts;
+
+  // 이벤트 객체와 소스 엘리먼트를 가져온다.
+  e = e || window.event;
+  src = e.target || e.srcElement;
+
+  // 버튼의 라벨을 변경한다.
+  parts = src.innerHTML.split(":");
+  parts[1] = parseInt(parts[1], 10) + 1;
+  src.innerHTML = parts[0] + ": " + parts[1];
+
+  // 이벤트가 상위노드로 전파되지 않게 한다.
+  if (typeof e.stopPropagation === "function") {
+    e.stopPropagation();
+  }
+  if (typeof e.cancelBubble !== "undefined") {
+    e.cancelBubble = true;
+  }
+  // 기본 동작이 수쟁되지 않게한다.
+  if (typeof e.preventDefault === "function") {
+    e.preventDefault();
+  }
+  if (typeof e.returnValue !== "undefined") {
+    e.returnValue = false;
+  }
+}
+```
+
+
+
+### 이벤트위임
+
+이벤트 위임패턴은 이벤트 버블링을 이용해서 개별노드에 붙는 이벤트 리스너의 개수를 줄여준다. div 내에 열개의 버튼이 있다면 각 버튼 엘리먼트에 리스터를 붙이는 대신 div엘리먼트에 하나의 이벤트 리스너만 붙인다. 
+
+```html
+<div id="click_wrap">
+  <button class="clickme">Click me : 0 </button>
+  <button class="clickme">Click me : 0 </button>
+  <button class="clickme">Click me : 0 </button>
+  <button class="clickme">Click me : 0 </button>
+</div>
+```
+
+```javascript
+function myHandler(e) {
+  var src, parts;
+
+  // 이벤트 객체와 소스 엘리먼트를 가져온다.
+  e = e || window.event;
+  src = e.target || e.srcElement;
+
+  if (src.nodeName.toLowerCase() !== "button") {
+    return;
+  }
+
+  // 버튼의 라벨을 변경한다.
+  parts = src.innerHTML.split(":");
+  parts[1] = parseInt(parts[1], 10) + 1;
+  src.innerHTML = parts[0] + ": " + parts[1];
+
+  // 이벤트가 상위노드로 전파되지 않게 한다.
+  if (typeof e.stopPropagation === "function") {
+    e.stopPropagation();
+  }
+  if (typeof e.cancelBubble !== "undefined") {
+    e.cancelBubble = true;
+  }
+  // 기본 동작이 수쟁되지 않게한다.
+  if (typeof e.preventDefault === "function") {
+    e.preventDefault();
+  }
+  if (typeof e.returnValue !== "undefined") {
+    e.returnValue = false;
+  }
+}
+
+var b = document.getElementById("click_wrap");
+
+if (document.addEventListener) { //W3C
+  b.addEventListener("click", myHandler, false);
+} else if (document.attachEvent) { //IE
+  b.attachEvent("onclick", myHandler);
+} else { //최후의 수단
+  b.onclick = myHandler;
+}
+```
+
+
+
+최신의 자바스크립트 라이브러리는 이벤트 위임을 쉽게 사용할 수 있도록 편리한 API를 제공한다. ex: YUI3의 Y.delegate() 메서드 
+
+```html
+<script src="http://yui.yahooapis.com/3.0.0/build/yui/yui-min.js"></script>
+```
+
+
+
+## 8.4 장시간 수행되는 스크립트
+
+자바스크립트에는 스레드가 없지만, setTimeout()이나 최신브라우저에서 지원하는 웹워커(web worker)를 사용해 스레드를 흉내낼 수 있다.
+
+
+
+###setTimeout()
+
+많은 양의 작업을 작은 덩어리로 쪼개고 각 덩어리를 setTimeout()을 이용해 1밀리초 간격의 타임아웃을 두고 실행하는 방법으로 스레드를 시뮬레이션 할 수 있다. UI를 응답가능한 상태로 유지함으로서 사용자가 더 편하게 브라우저를 제어할 수 있게 해준다. 
+
+1밀리초 단위는 브라우저와 운영체제에 따라 다르다. 
+
+```javascript
+if (privateMember.scrollSync) {
+  if (!privateMember.vertical.visible && privateMember.parentElement.innerHeight() < privateMember.element.client.outerHeight()) {
+    privateMember.vertical.visible = true;
+    privateMember.element.vertical.body.show();
+    privateMember.vertical.maxSize = privateMember.element.client.outerHeight();
+
+    setTimeout(function () {
+      privateMember.element.vertical.scrollBarArea.scrollBar.css("height", (privateMember.element.vertical.scrollBarArea.body.innerHeight() * ((privateMember.element.vertical.scrollBarArea.body.innerHeight() - privateMember.element.vertical.scrollBarArea.scrollBar.outerHeight()) / privateMember.vertical.maxSize - privateMember.parentElement.innerHeight())) + "px");
+    }, 0);
+```
+
+
+
+### web worker
+
+최신의 브라우저들은 장시간 수행되는 스키립트에 대한 또 다른 해결책을 제공한다. 
+
+바로 웹워커다. 웹워커는 브라우저 내에서 백그라운드 스레드를 제공한다. 
+
+복잡한 계산을 분리된 파일, 예를들어 my_web_worker.js에 두고, 메인 프로그램에서 다음과 같디 호출한다. 
+
+```javascript
+var ww = new Worker('my_web_worker.js');
+
+ww.onmessage = function (event) {
+  document.body.innerHTML +=
+    '<p>백그라운드 스레드의 메시지 : ' +
+    event.data + '</p > ';
+};
+
+var end = 1e8, tmp = 1;
+ww.postMessage("안녕하세요");
+
+while (end) {
+  end -= 1;
+  tmp += end;
+  if (end === 5e7) {
+    ww.postMessage("절반정도 진행되었습니다. 현재 tmp값은 " + tmp + "입니다.");
+  }
+}
+
+ww.postMessage("작업종료");
+```
+
