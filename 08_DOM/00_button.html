@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html class="asf">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>AcFramework</title>    
+</head>
+<body>
+    <div id="click_wrap">
+        <button class="clickme">Click me : 0 </button>
+        <button class="clickme">Click me : 0 </button>
+        <button class="clickme">Click me : 0 </button>
+        <button class="clickme">Click me : 0 </button>
+    </div>
+    <script>
+        function myHandler(e) {
+            var src, parts;
+
+            // 이벤트 객체와 소스 엘리먼트를 가져온다.
+            e = e || window.event;
+            src = e.target || e.srcElement;
+
+            if (src.nodeName.toLowerCase() !== "button") {
+                return;
+            }
+
+            // 버튼의 라벨을 변경한다.
+            parts = src.innerHTML.split(":");
+            parts[1] = parseInt(parts[1], 10) + 1;
+            src.innerHTML = parts[0] + ": " + parts[1];
+
+            // 이벤트가 상위노드로 전파되지 않게 한다.
+            if (typeof e.stopPropagation === "function") {
+                e.stopPropagation();
+            }
+            if (typeof e.cancelBubble !== "undefined") {
+                e.cancelBubble = true;
+            }
+            // 기본 동작이 수쟁되지 않게한다.
+            if (typeof e.preventDefault === "function") {
+                e.preventDefault();
+            }
+            if (typeof e.returnValue !== "undefined") {
+                e.returnValue = false;
+            }
+        }
+
+        var b = document.getElementById("click_wrap");
+
+        if (document.addEventListener) { //W3C
+            b.addEventListener("click", myHandler, false);
+        } else if (document.attachEvent) { //IE
+            b.attachEvent("onclick", myHandler);
+        } else { //최후의 수단
+            b.onclick = myHandler;
+            }
+
+        
+    </script>
+</body>
+</html>
