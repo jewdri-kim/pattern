@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name ="format-detection" content ="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>05_객체생성패턴</title>
+<style type="text/css">
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,textarea,button {margin:0;padding:0}
+a {color:#1b52b1;text-decoration:underline}
+a:active, a:hover {text-decoration:underline}
+</style>
+</head>
+<body>
+<!-- 
+1. callback이 파라메터인 box 안에 사용할 모듈들의 객체가 들어있게 처리
+2. 3개의 sandbox 를 사용해서 첫번째 sandbox는 User라는 class를 만들고(멤버는 name 필드와 getName 메서드가 존재함),
+    두번재 sandbox는 'john'이라는 이름으로 User 인스턴스 생성 해서 console로 출력
+    세번째 sandbox는 'kay' 라는 이름으로 User 인스턴스 생성  console로 출력
+-->
+</body>
+<script>
+var mysand = (function(){
+	function Sandbox(){
+		var args = Array.prototype.slice.call(arguments),
+			callback = args.pop(),
+			modules = (args[0] && typeof args[0] === 'string') ? args : args[0],
+			i;
+
+			if(!(this instanceof Sandbox)){
+				return new Sandbox(modules, callback);
+			}
+
+		this.a = 1;
+		this.b = 2;
+
+		if(!modules || modules === '*' || modules[0] === '*'){
+			modules = [];
+			for(i in Sandbox.modules){
+				if(Sandbox.modules.hasOwnProperty(i)){
+					modules.push(i);
+				}
+			}
+		}
+
+		for(i = 0; i < modules.length; i += 1){
+			Sandbox.modules[modules[i]](this);
+		}
+		
+		callback(this);
+	}
+	Sandbox.modules = {};
+	Sandbox.modules.dom = function(box){
+		box.dom = {};
+		box.dom.getElement = function(){};
+		box.dom.getStyle = function(){};
+	}
+	Sandbox.modules.event = function(box){	
+		box.event = {};
+		box.event.getElement = function(){};
+		box.event.getStyle = function(){};
+	}
+	Sandbox.modules.ajax = function(box){
+		box.ajax = {};
+		box.ajax.makeRequest = function(){alert(0)};
+		box.ajax.getResponse = function(){alert(1)};
+	}
+	Sandbox.prototype = {
+		name: "My Application",
+		version: "1.0",
+		export: null,
+		makeUser: function(name){
+			return (new this.export(name));
+		}
+	};
+
+	return Sandbox;
+})();
+
+/// 실행
+mysand(['ajax', 'event', 'dom'],function(box){
+	function User(name){
+		this.name= name;
+	}
+	User.prototype.getName = function(){
+		console.log(this.name);
+	}
+
+	mysand.prototype.export = User;
+});
+
+mysand(['dom'],function(box){
+	box.instance = box.makeUser('john');
+	box.instance.getName();
+});
+
+mysand(['dom'],function(box){
+	box.instance = box.makeUser('kay');
+	box.instance.getName();
+});
+</script>
+</html>
